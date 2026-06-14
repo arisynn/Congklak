@@ -89,7 +89,7 @@
     padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;
     font-family: 'Inter', sans-serif; font-size: clamp(11px, 1.2vw, 13px);
     font-weight: 700; letter-spacing: 0.04em; transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
-    position: relative; overflow: hidden;
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary { background: var(--accent); color: #ffffff; box-shadow: 0 8px 20px rgba(37,99,235,0.28); }
@@ -98,7 +98,6 @@
   .btn-gold:hover { background: linear-gradient(135deg, #14c98a, var(--emerald)); box-shadow: 0 10px 24px rgba(16,185,129,0.36); transform: translateY(-1px); }
   .btn-outline { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line); }
   .btn-outline:hover { background: var(--surface-2); border-color: #cdd5e1; color: var(--ink); }
-  .btn-icon { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
   .input-field {
     width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line);
@@ -197,8 +196,8 @@
   }
   @keyframes pulse-target { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-  .pit.active-pit .pit-inner { box-shadow: inset 0 4px 12px rgba(30,41,59,0.10), 0 0 0 3px var(--emerald), 0 0 16px rgba(16,185,129,0.45); }
-  .pit.active-pit { animation: pit-pop 0.35s ease; }
+  .pit.active-pit .pit-inner, .store.active-pit .store-inner { box-shadow: inset 0 4px 12px rgba(30,41,59,0.10), 0 0 0 3px var(--emerald), 0 0 16px rgba(16,185,129,0.45); }
+  .pit.active-pit, .store.active-pit { animation: pit-pop 0.35s ease; }
   
   .pit-count {
     font-family: 'Poppins', serif; font-size: clamp(8px, 1vw, 11px); font-weight: 700;
@@ -226,11 +225,7 @@
 
   /* ===== PHYSICAL SEEDS LAYER ===== */
   #seed-layer { position: fixed; inset: 0; pointer-events: none; z-index: 45; }
-  .physical-seed {
-    position: absolute; top: 0; left: 0;
-    width: 14px; height: 14px; border-radius: 50%;
-    pointer-events: none; will-change: transform;
-  }
+  .physical-seed { position: absolute; top: 0; left: 0; width: 14px; height: 14px; border-radius: 50%; pointer-events: none; will-change: transform; }
 
   /* ===== MODALS (SIDE-BY-SIDE INPUTS) ===== */
   .modal-overlay { position: fixed; inset: 0; background: rgba(30,41,59,0.35); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 16px; transition: align-items 0.3s, padding-top 0.3s; }
@@ -345,7 +340,7 @@
       <div style="font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800; color: var(--ink);">Panduan Bermain</div>
     </div>
     <div class="rules-content">
-      <p>Setiap pemain memiliki deretan lubang di sisinya dan satu lumbung (store) besar di ujung kanan.</p>
+      <p>Setiap pemain memiliki deretan lubang di sisinya dan satu lumbung besar di ujung kanan.</p>
       <ol>
         <li>Pada gilirannya, pilih satu lubang di sisi kamu untuk mengambil semua bijinya, lalu tabur berlawanan arah jarum jam.</li>
         <li>Biji <strong>tidak</strong> dimasukkan ke lumbung lawan.</li>
@@ -418,22 +413,20 @@
       </div>
     </div>
     
-    <div class="variant-selector" style="margin-top: -2px;">
-      <div class="variant-btn active" id="btn-sow-auto" onclick="setSowingMode('auto')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        Tabur Otomatis
-      </div>
-      <div class="variant-btn" id="btn-sow-manual" onclick="setSowingMode('manual')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
-        Tabur Manual
-      </div>
-    </div>
+    <div class="divider">PENGATURAN PERSONAL</div>
+    
+    <!-- PENGATURAN MODE TABUR (LOBBY) -->
+    <button class="btn btn-outline btn-icon" id="btn-toggle-sow-lobby" style="padding: 10px 14px;">
+      <svg id="icon-sow-lobby" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      <span id="text-sow-lobby" style="flex:1; text-align:left; font-size:12px;">Mode Tabur: Otomatis</span>
+    </button>
 
-    <button class="btn btn-gold btn-icon" id="btn-local" style="margin-top: 4px;">
+    <div class="divider" style="margin-top:2px;"></div>
+
+    <button class="btn btn-gold btn-icon" id="btn-local">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>
       LOCAL 2 PLAYERS
     </button>
-    <div class="divider">OR ONLINE MULTIPLAYER</div>
     <div style="display:flex; gap:8px;">
       <button class="btn btn-primary" id="btn-create" style="flex:1;">CREATE ROOM</button>
       <button class="btn btn-outline" id="btn-open-join" style="flex:1;">JOIN ROOM</button>
@@ -463,6 +456,12 @@
     <div class="hud-title" id="in-game-title">MANCALA</div>
     <div class="turn-badge neutral" id="turn-badge">READY</div>
     <div style="display:flex; gap:8px;">
+      
+      <!-- PENGATURAN MODE TABUR (IN GAME) -->
+      <button class="btn-sm icon-only" id="btn-toggle-sow-game" title="Ubah Mode Tabur">
+        <svg id="icon-sow-game" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      </button>
+
       <button class="btn-sm icon-only" id="btn-fs-game" title="Toggle Fullscreen">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
       </button>
@@ -532,7 +531,7 @@ document.querySelectorAll('.input-field').forEach(input => {
 const ABLY_KEY = '4opURQ.FVPiqg:z5W8zQxWoBNlXmlAXvOv4Bz1bmn_ISnFucJGpjFijS8';
 
 let gameVariant = 'mancala'; // mancala / congklak
-let sowingMode = 'auto'; // auto / manual
+let sowingMode = 'auto';    // Pengaturan personal: auto / manual
 
 let INITIAL_SEEDS = 4;
 let TOTAL_PITS = 14;
@@ -555,6 +554,9 @@ let isHost = false;
 
 let playerNames = { 1: 'PLAYER 1', 2: 'PLAYER 2' };
 let myGlobalName = '';
+
+// ANTRIAN ONLINE MULTIPLAYER (QUEUE SYSTEM)
+let moveQueue = [];
 
 // MANUAL MODE VARIABLES
 let heldSeeds = 0;
@@ -579,20 +581,45 @@ const SVGS = {
   alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
   max: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>',
   min: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3h-3"></path><path d="M16 3v3h3"></path><path d="M8 21v-3h-3"></path><path d="M16 21v-3h3"></path><path d="M3 8h3V5"></path><path d="M21 8h-3V5"></path><path d="M3 16h3v3"></path><path d="M21 16h-3v3"></path></svg>',
-  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>'
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>',
+  hand: '<path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path>'
 };
+
+// ==========================================
+// TOGGLE SETTINGS (AUTO / MANUAL)
+// ==========================================
+function updateSowingUI() {
+  const isAuto = sowingMode === 'auto';
+  const txtLobby = document.getElementById('text-sow-lobby');
+  const iconLobby = document.getElementById('icon-sow-lobby');
+  const iconGame = document.getElementById('icon-sow-game');
+  
+  if (txtLobby) txtLobby.textContent = isAuto ? 'Mode Tabur: Otomatis' : 'Mode Tabur: Manual';
+  if (iconLobby) iconLobby.innerHTML = isAuto ? SVGS.zap : SVGS.hand;
+  if (iconGame) iconGame.innerHTML = isAuto ? SVGS.zap : SVGS.hand;
+  
+  const gameBtn = document.getElementById('btn-toggle-sow-game');
+  if (gameBtn) {
+    if (isAuto) gameBtn.classList.remove('btn-gold');
+    else gameBtn.classList.add('btn-gold');
+  }
+}
+
+function toggleSowingMode() {
+  if (animating || heldSeeds > 0) { showToast('Tunggu giliran selesai!'); return; }
+  sowingMode = sowingMode === 'auto' ? 'manual' : 'auto';
+  updateSowingUI();
+  try { localStorage.setItem('mancala_sowing', sowingMode); } catch(e) {}
+}
+
+document.getElementById('btn-toggle-sow-lobby').onclick = toggleSowingMode;
+document.getElementById('btn-toggle-sow-game').onclick = toggleSowingMode;
 
 function setVariant(variant) {
   gameVariant = variant;
   document.getElementById('btn-var-mancala').classList.toggle('active', variant === 'mancala');
   document.getElementById('btn-var-congklak').classList.toggle('active', variant === 'congklak');
   setupGameRules();
-}
-
-function setSowingMode(mode) {
-  sowingMode = mode;
-  document.getElementById('btn-sow-auto').classList.toggle('active', mode === 'auto');
-  document.getElementById('btn-sow-manual').classList.toggle('active', mode === 'manual');
 }
 
 function setupGameRules() {
@@ -616,9 +643,13 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     myGlobalName = localStorage.getItem('mancala_p1_name') || '';
     if (myGlobalName) playerNames[1] = myGlobalName;
+    const savedSow = localStorage.getItem('mancala_sowing');
+    if (savedSow) sowingMode = savedSow;
   } catch(e) {}
+  
   updateLobbyNameDisplay();
   setupGameRules(); 
+  updateSowingUI();
 
   if (!myGlobalName) {
     document.getElementById('global-name-modal').classList.remove('hidden');
@@ -849,7 +880,7 @@ function makeStore(index, playerOwner, w, h) {
   const cnt = document.createElement('div'); cnt.className = 'store-count'; cnt.id = `count-${index}`; cnt.textContent = '0';
   const store = document.createElement('div'); store.className = 'store'; store.id = `pit-${index}`;
   store.style.width = w + 'px'; store.style.height = h + 'px';
-  store.addEventListener('click', () => onPitClick(index)); // STORE CLICK UNTUK MANUAL MODE
+  store.addEventListener('click', () => onPitClick(index)); 
   const inner = document.createElement('div'); inner.className = 'store-inner'; store.appendChild(inner); pitElements[index] = store;
 
   if (playerOwner === myPlayer) { wrap.appendChild(lbl); wrap.appendChild(store); wrap.appendChild(cnt); } 
@@ -881,6 +912,7 @@ function updateClickability() {
   if (!gameActive || animating) { removeAllHighlights(); return; }
   removeAllHighlights();
 
+  // Mode Manual: Sorot lubang target saja
   if (sowingMode === 'manual' && heldSeeds > 0) {
     if (canIPlay()) {
       const el = pitElements[currentSowPit];
@@ -889,6 +921,7 @@ function updateClickability() {
     return;
   }
 
+  // Normal: Pilih lubang awal
   P1_PITS.forEach(i => {
     const el = pitElements[i]; if (!el) return;
     if (turn === 1 && board[i] > 0 && canIPlay()) el.classList.add('clickable','p1-clickable');
@@ -918,21 +951,34 @@ function onPitClick(index) {
   if (!gameActive || animating) return;
 
   if (sowingMode === 'manual' && heldSeeds > 0) {
-    if (index !== currentSowPit) return; // Hanya target valid yang boleh
+    // Fase Jatuh Manual
+    if (index !== currentSowPit) return; 
+    doMoveManual(index);
   } else {
+    // Fase Ambil Awal
     const isP1Pit = P1_PITS.includes(index); const isP2Pit = P2_PITS.includes(index);
     if (!isP1Pit && !isP2Pit) return;
     if (turn === 1 && !isP1Pit) return;
     if (turn === 2 && !isP2Pit) return;
     if (board[index] === 0) return;
+    if (!canIPlay()) { showToast('Tunggu giliranmu!'); return; }
+
+    // Kirim sinyal online ketika mengambil biji pertama kali
+    if (gameMode === 'online') channel.publish('move', { from: index, turn });
+    
+    if (sowingMode === 'auto') doMoveAuto(index);
+    else doMoveManual(index);
   }
+}
 
-  if (!canIPlay()) { showToast('Tunggu giliranmu!'); return; }
-
-  if (gameMode === 'online') channel.publish('move', { from: index, board: JSON.parse(JSON.stringify(board)), turn });
-  
-  if (sowingMode === 'auto') doMoveAuto(index);
-  else doMoveManual(index);
+// ==========================================
+// SYSTEM ANTRIAN ONLINE (QUEUE)
+// ==========================================
+function tryProcessQueue() {
+  if (!animating && moveQueue.length > 0 && gameActive && heldSeeds === 0) {
+    const nextFrom = moveQueue.shift();
+    doMoveAuto(nextFrom); // Musuh selalu otomatis
+  }
 }
 
 // ==========================================
@@ -994,7 +1040,7 @@ async function doMoveAuto(startIndex) {
          update: function() { seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`; },
          complete: function() { seedObj.el.style.zIndex = '1'; }
       });
-      updateCounts(); await sleep(100);
+      updateCounts(); await sleep(80);
     }
 
     if (activePitEl) activePitEl.classList.remove('active-pit');
@@ -1068,7 +1114,7 @@ async function doMoveManual(index) {
     return;
   }
 
-  // JIKA SEDANG MEMEGANG BIJI (DROP)
+  // DROP BIJI SATU PER SATU
   let seedObj = movingSeedsArray.pop();
   if (seedObj) {
     seedObj.pit = currentSowPit; board[currentSowPit]++;
@@ -1093,7 +1139,7 @@ async function doMoveManual(index) {
       });
     });
     heldSeeds--;
-    updateTurnBadge(heldSeeds > 0 ? `SISA: ${heldSeeds} BIJI` : `MENGECEK LUBANG...`, turn === 1 ? 'p1' : 'p2');
+    updateTurnBadge(heldSeeds > 0 ? `SISA: ${heldSeeds} BIJI` : `MENGEVALUASI...`, turn === 1 ? 'p1' : 'p2');
   }
 
   if (heldSeeds > 0) {
@@ -1101,7 +1147,7 @@ async function doMoveManual(index) {
     animating = false; updateClickability(); return;
   }
 
-  // OUT OF SEEDS! Evaluasi
+  // BIJI HABIS: Cek aturan
   const curr = currentSowPit; 
   const activePitEl = pitElements[curr]; if (activePitEl) activePitEl.classList.add('active-pit');
   await sleep(350);
@@ -1174,6 +1220,7 @@ async function finishTurn(extraTurn) {
   updateTurnBadge(`${tName}'S TURN`, turn === 1 ? 'p1' : 'p2');
   if (!extraTurn) { const badge = document.getElementById('turn-badge'); badge?.classList.add('pulse'); setTimeout(() => badge?.classList.remove('pulse'), 600); }
   updateClickability();
+  setTimeout(tryProcessQueue, 100);
 }
 
 async function checkGameOver() {
@@ -1223,7 +1270,7 @@ function showToast(htmlMsg) {
 
 function startGame(mode) {
   gameMode = mode; createBoard(); turn = startingPlayer; gameActive = true; animating = false; pitElements = {};
-  heldSeeds = 0; currentSowPit = -1; movingSeedsArray = [];
+  heldSeeds = 0; currentSowPit = -1; movingSeedsArray = []; moveQueue = [];
 
   const sn1 = document.getElementById('score-name-p1'); const sn2 = document.getElementById('score-name-p2');
   if (sn1) sn1.textContent = (playerNames[1] || 'PLAYER 1').toUpperCase();
@@ -1280,13 +1327,14 @@ function initAbly(onReady) {
   ably.connection.on('disconnected', () => showToast(`${SVGS.alert} <span>Koneksi terputus</span>`));
 }
 function generateRoomCode() { return Math.floor(1000 + Math.random() * 9000).toString(); }
+
 function joinAblyRoom(code, asPlayer) {
   roomCode = code; myPlayer = asPlayer; channel = ably.channels.get(`mancala-${code}`);
   channel.subscribe('move', msg => { 
     if (gameMode !== 'online') return; 
     if (msg.data.turn !== myPlayer) {
-      if (sowingMode === 'auto') doMoveAuto(msg.data.from);
-      else doMoveManual(msg.data.from);
+      moveQueue.push(msg.data.from);
+      tryProcessQueue();
     } 
   });
   channel.subscribe('rematch', msg => { startingPlayer = msg.data.startingPlayer || (startingPlayer === 1 ? 2 : 1); startGame('online'); showToast('Rematch dimulai!'); });
@@ -1298,8 +1346,8 @@ function _doCreateRoom() {
     isHost = true; startingPlayer = 1; const code = generateRoomCode(); document.getElementById('room-code-display').textContent = code;
     joinAblyRoom(code, 1); showScreen('waiting');
     channel.subscribe('join', msg => {
-      playerNames[2] = msg.data.name || 'PLAYER 2';
-      channel.publish('ready', { hostName: myGlobalName, variant: gameVariant, sowing: sowingMode });
+      playerNames[2] = msg.data.name || 'PLAYER 2'; // TANGKAP NAMA GUEST
+      channel.publish('ready', { hostName: myGlobalName, variant: gameVariant }); // KIRIM NAMA HOST
       showToast('Lawan bergabung!'); startGame('online');
     });
     lbl.textContent = '';
@@ -1310,13 +1358,12 @@ function _doJoinRoom(code) {
   const lbl = document.getElementById('lobby-status'); lbl.textContent = 'Menghubungkan...';
   initAbly(() => {
     isHost = false; startingPlayer = 1; 
-    playerNames[2] = myGlobalName || 'PLAYER 2'; // FIX SINKRON NAMA GUEST
+    playerNames[2] = myGlobalName || 'PLAYER 2'; 
     joinAblyRoom(code, 2);
     channel.publish('join', { name: myGlobalName }); lbl.textContent = 'Menunggu konfirmasi host...';
     channel.subscribe('ready', msg => {
-      playerNames[1] = msg.data.hostName || 'PLAYER 1';
+      playerNames[1] = msg.data.hostName || 'PLAYER 1'; // TANGKAP NAMA HOST
       setVariant(msg.data.variant || 'mancala'); 
-      setSowingMode(msg.data.sowing || 'auto');
       showToast('Game dimulai!'); startGame('online');
     });
   });
