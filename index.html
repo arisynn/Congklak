@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>CONGKLAK & MANCALA — Physics Edition</title>
+<title>CONGKLAK & MANCALA — Perfect Physics</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
 <style>
@@ -40,13 +40,12 @@
   }
 
   /* ===== SCREENS ===== */
-  .screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+  .screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; transition: padding-top 0.3s; }
   .screen.hidden { display: none; }
 
   /* ===== LOBBY ===== */
-  #lobby {
-    background: radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 55%), linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-  }
+  #lobby { background: radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 55%), linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%); }
+  
   .lobby-title {
     font-family: 'Poppins', sans-serif;
     font-size: clamp(22px, 6vh, 42px);
@@ -56,11 +55,7 @@
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     text-align: center; white-space: nowrap;
   }
-  .lobby-sub {
-    font-family: 'Inter', sans-serif; font-size: clamp(9px, 2vh, 12px);
-    color: var(--ink-faint); letter-spacing: 0.35em; font-weight: 600; margin-bottom: 8px;
-  }
-
+  
   .lobby-welcome {
     display: inline-flex; align-items: center; gap: 8px;
     font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
@@ -77,12 +72,10 @@
     padding: 16px 24px; width: min(440px, 90vw);
     display: flex; flex-direction: column; gap: 10px;
     box-shadow: 0 20px 50px var(--shadow), 0 2px 8px rgba(30,41,59,0.04);
+    transition: transform 0.3s;
   }
 
-  .variant-selector {
-    display: flex; gap: 8px; background: var(--surface-2);
-    padding: 6px; border-radius: 14px; border: 1px solid var(--line);
-  }
+  .variant-selector { display: flex; gap: 8px; background: var(--surface-2); padding: 6px; border-radius: 14px; border: 1px solid var(--line); }
   .variant-btn {
     flex: 1; padding: 8px 0; text-align: center; font-size: 11px; font-weight: 700;
     color: var(--ink-soft); border-radius: 10px; cursor: pointer; transition: all 0.2s;
@@ -105,7 +98,6 @@
   .btn-gold:hover { background: linear-gradient(135deg, #14c98a, var(--emerald)); box-shadow: 0 10px 24px rgba(16,185,129,0.36); transform: translateY(-1px); }
   .btn-outline { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line); }
   .btn-outline:hover { background: var(--surface-2); border-color: #cdd5e1; color: var(--ink); }
-
   .btn-icon { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
   .input-field {
@@ -116,10 +108,7 @@
   .input-field:focus { border-color: var(--accent); background: #ffffff; }
   .input-field::placeholder { color: var(--ink-faint); }
 
-  .room-code-display {
-    background: var(--surface); border: 2px dashed #cbd5e1; border-radius: 16px;
-    padding: 16px; text-align: center; box-shadow: 0 12px 32px var(--shadow);
-  }
+  .room-code-display { background: var(--surface); border: 2px dashed #cbd5e1; border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 12px 32px var(--shadow); }
   .room-code-val { font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); letter-spacing: 0.3em; }
 
   .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse-dot 1.5s ease-in-out infinite; }
@@ -171,8 +160,7 @@
   }
   .score-item { display:flex; align-items:center; gap:8px; }
   .score-label { font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; }
-  .score-label.p1 { color: var(--p1-color); }
-  .score-label.p2 { color: var(--p2-color); }
+  .score-label.p1 { color: var(--p1-color); } .score-label.p2 { color: var(--p2-color); }
   .score-num { font-family:'Poppins',sans-serif; font-size:20px; font-weight:800; color:var(--ink); transition: transform 0.25s ease; }
   .score-num.bump { animation: score-bump 0.35s ease; }
   @keyframes score-bump { 0% { transform: scale(1); } 50% { transform: scale(1.35); color: var(--emerald); } 100% { transform: scale(1); } }
@@ -235,27 +223,24 @@
     pointer-events: none; will-change: transform;
   }
 
-  /* ===== MODALS ===== */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(30,41,59,0.35); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
+  /* ===== MODALS (SIDE-BY-SIDE INPUTS) ===== */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(30,41,59,0.35); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 16px; transition: align-items 0.3s, padding-top 0.3s; }
   .modal-overlay.hidden { display: none; }
-  .modal-box {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
-    padding: 20px 24px; text-align: center; min-width: 300px; max-height: 85vh; overflow-y: auto;
-    box-shadow: 0 32px 80px rgba(30,41,59,0.25); animation: modal-in 0.3s ease;
-  }
-  @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
   
   .name-modal-box {
     background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
-    padding: 20px 24px; text-align: center; min-width: min(380px, 88vw);
+    padding: 20px 24px; text-align: center; min-width: min(400px, 92vw);
     box-shadow: 0 32px 80px rgba(30,41,59,0.25); display: flex; flex-direction: column; gap: 12px;
     animation: modal-in 0.3s ease;
   }
-  .name-modal-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: 0.02em; }
-  .name-row { display: flex; align-items: center; gap: 12px; }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  
+  .name-modal-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: 0.02em; margin-bottom: 4px; }
+  .name-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+  
   .name-avatar {
     width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; flex-shrink: 0;
+    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700; flex-shrink: 0;
   }
   .name-avatar.p1 { background: var(--accent-soft); color: var(--p1-color); border: 1px solid rgba(37,99,235,0.25); }
   .name-avatar.p2 { background: rgba(244,63,94,0.10); color: var(--p2-color); border: 1px solid rgba(244,63,94,0.25); }
@@ -305,6 +290,17 @@
   }
   #btn-rules-lobby:hover { background: var(--surface-2); color: var(--accent); transform: scale(1.05); }
 
+  /* ===== KEYBOARD FIX ===== */
+  body.keyboard-open .modal-overlay { align-items: flex-start; padding-top: 5vh; }
+
+  /* ===== MODAL CLOSE BTN ===== */
+  .modal-close {
+    position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--surface-2); border: none; color: var(--ink-faint); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--line); color: var(--ink); }
+
 </style>
 </head>
 <body>
@@ -332,7 +328,8 @@
 
 <!-- RULES MODAL -->
 <div id="rules-modal" class="modal-overlay hidden" style="z-index: 90;">
-  <div class="rules-box">
+  <div class="rules-box" style="position:relative;">
+    <button class="modal-close" onclick="document.getElementById('rules-modal').classList.add('hidden')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     <div style="text-align: center;">
       <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 4px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
       <div style="font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800; color: var(--ink);">Panduan Bermain</div>
@@ -359,24 +356,34 @@
     <div class="name-modal-title">MASUKKAN NAMA KAMU</div>
     <div class="name-row">
       <div class="name-avatar p1">P1</div>
-      <input class="input-field" id="input-global-name" placeholder="Nama kamu..." maxlength="12" style="flex:1"/>
+      <input class="input-field" id="input-global-name" placeholder="Nama..." maxlength="12" style="flex:1"/>
+      <button class="btn btn-gold" id="btn-save-global-name" style="padding: 10px 18px; font-size:12px;">SIMPAN</button>
     </div>
-    <button class="btn btn-gold" id="btn-save-global-name" style="width:100%;">SIMPAN</button>
   </div>
 </div>
 
 <!-- LOCAL P2 NAME MODAL -->
 <div id="p2-name-modal" class="modal-overlay hidden" style="z-index: 80;">
-  <div class="name-modal-box">
-    <div class="name-modal-title">NAMA PLAYER 2 (LOKAL)</div>
+  <div class="name-modal-box" style="position:relative;">
+    <button class="modal-close" onclick="document.getElementById('p2-name-modal').classList.add('hidden')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    <div class="name-modal-title" style="margin-right:20px;">NAMA PLAYER 2 (LOKAL)</div>
     <div class="name-row">
       <div class="name-avatar p2">P2</div>
       <input class="input-field" id="input-p2-name" placeholder="Nama Player 2..." maxlength="12" style="flex:1"/>
+      <button class="btn btn-gold" id="btn-start-local" style="padding: 10px 18px; font-size:12px;">MULAI</button>
     </div>
-    <button class="btn btn-gold btn-icon" id="btn-start-local" style="width:100%;">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-      MULAI GAME
-    </button>
+  </div>
+</div>
+
+<!-- JOIN ROOM MODAL -->
+<div id="join-modal" class="modal-overlay hidden" style="z-index: 80;">
+  <div class="name-modal-box" style="position:relative;">
+    <button class="modal-close" onclick="document.getElementById('join-modal').classList.add('hidden')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    <div class="name-modal-title" style="margin-right:20px;">GABUNG ROOM MULTIPLAYER</div>
+    <div class="name-row">
+      <input class="input-field" id="join-code" type="number" placeholder="4 Digit Kode..." maxlength="4" style="flex:1;text-transform:uppercase;letter-spacing:0.2em;text-align:center" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"/>
+      <button class="btn btn-primary" id="btn-join-submit" style="padding: 10px 20px; font-size:12px;">JOIN</button>
+    </div>
   </div>
 </div>
 
@@ -406,10 +413,9 @@
       LOCAL 2 PLAYERS
     </button>
     <div class="divider">OR ONLINE MULTIPLAYER</div>
-    <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
-    <div style="display:flex;gap:6px">
-      <input class="input-field" id="join-code" type="number" placeholder="4 Digit Code..." maxlength="4" style="flex:1;text-transform:uppercase;letter-spacing:0.2em;text-align:center" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"/>
-      <button class="btn btn-primary" id="btn-join" style="flex-shrink:0;padding:0 16px">JOIN</button>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-primary" id="btn-create" style="flex:1;">CREATE ROOM</button>
+      <button class="btn btn-outline" id="btn-open-join" style="flex:1;">JOIN ROOM</button>
     </div>
     <div id="lobby-status" style="font-size:11px;color:var(--ink-faint);text-align:center;min-height:16px;letter-spacing:0.05em;"></div>
   </div>
@@ -492,6 +498,18 @@
 
 <script>
 // ==========================================
+// KEYBOARD & INPUT FOCUS FIX (Landscape)
+// ==========================================
+document.querySelectorAll('.input-field').forEach(input => {
+  input.addEventListener('focus', () => {
+    document.body.classList.add('keyboard-open');
+  });
+  input.addEventListener('blur', () => {
+    document.body.classList.remove('keyboard-open');
+  });
+});
+
+// ==========================================
 // CONSTANTS & DYNAMIC STATE
 // ==========================================
 const ABLY_KEY = '4opURQ.FVPiqg:z5W8zQxWoBNlXmlAXvOv4Bz1bmn_ISnFucJGpjFijS8';
@@ -519,15 +537,16 @@ let isHost = false;
 let playerNames = { 1: 'PLAYER 1', 2: 'PLAYER 2' };
 let myGlobalName = '';
 
-const SEED_COLORS_P1 = [
-  { base:'#2563EB', shine:'#BFDBFE', dark:'#1E3A8A' },
-  { base:'#0EA5E9', shine:'#BAE6FD', dark:'#075985' },
-  { base:'#6366F1', shine:'#C7D2FE', dark:'#3730A3' },
-];
-const SEED_COLORS_P2 = [
-  { base:'#F43F5E', shine:'#FECDD3', dark:'#9F1239' },
-  { base:'#F59E0B', shine:'#FDE68A', dark:'#92400E' },
-  { base:'#EC4899', shine:'#FBCFE8', dark:'#9D174D' },
+// PALET WARNA-WARNI PERMEN (Semua biji menggunakan ini, tidak peduli player siapa)
+const ALL_SEED_COLORS = [
+  { base:'#2563EB', shine:'#BFDBFE', dark:'#1E3A8A' }, // Biru
+  { base:'#0EA5E9', shine:'#BAE6FD', dark:'#075985' }, // Cyan
+  { base:'#6366F1', shine:'#C7D2FE', dark:'#3730A3' }, // Indigo
+  { base:'#F43F5E', shine:'#FECDD3', dark:'#9F1239' }, // Pink/Rose
+  { base:'#F59E0B', shine:'#FDE68A', dark:'#92400E' }, // Emas/Kuning
+  { base:'#EC4899', shine:'#FBCFE8', dark:'#9D174D' }, // Magenta
+  { base:'#10B981', shine:'#A7F3D0', dark:'#065F46' }, // Zamrud/Hijau
+  { base:'#8B5CF6', shine:'#DDD6FE', dark:'#4C1D95' }, // Ungu
 ];
 
 const SVGS = {
@@ -620,15 +639,59 @@ document.getElementById('input-p2-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btn-start-local').click();
 });
 
-document.getElementById('btn-create').onclick = () => _doCreateRoom();
-document.getElementById('btn-join').onclick = () => {
+// MODAL JOIN ROOM BARU
+document.getElementById('btn-open-join').onclick = () => {
+  document.getElementById('join-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('join-code').focus(), 100);
+};
+
+document.getElementById('btn-join-submit').onclick = () => {
   const code = document.getElementById('join-code').value.trim();
-  if (code.length !== 4) { showLobbyStatus('Masukkan 4 digit kode'); return; }
+  if (code.length !== 4) { showToast('Masukkan 4 digit kode'); return; }
+  document.getElementById('join-modal').classList.add('hidden');
   _doJoinRoom(code);
 };
 
+document.getElementById('join-code').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-join-submit').click();
+});
+
+document.getElementById('btn-create').onclick = () => _doCreateRoom();
+
 // ==========================================
-// PHYSICAL SEEDS SYSTEM
+// BACKGROUND MUSIC
+// ==========================================
+let bgmTracks = [];
+let currentTrackIdx = 0;
+let bgmAudio = new Audio();
+bgmAudio.volume = 0.25;
+
+async function initBGM() {
+  try {
+    const res = await fetch('https://itunes.apple.com/search?term=lofi+chill+beats+instrumental&entity=song&limit=50');
+    const data = await res.json();
+    let tracks = data.results.filter(t => t.previewUrl).map(t => t.previewUrl);
+    for (let i = tracks.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
+    }
+    bgmTracks = tracks;
+  } catch(e) { }
+}
+function playBGM() {
+  if (bgmTracks.length === 0) return;
+  bgmAudio.src = bgmTracks[currentTrackIdx];
+  bgmAudio.play().catch(()=>{});
+  bgmAudio.onended = () => {
+    currentTrackIdx = (currentTrackIdx + 1) % bgmTracks.length;
+    playBGM();
+  };
+}
+document.addEventListener('click', () => { if (bgmAudio.paused && bgmTracks.length > 0) playBGM(); }, { once: true, capture: true });
+initBGM();
+
+// ==========================================
+// PHYSICAL SEEDS SYSTEM (GRASPING & SOWING)
 // ==========================================
 let seedEntities = [];
 let seedLayouts = {};
@@ -651,24 +714,19 @@ function initPhysicalSeeds() {
   layer.innerHTML = '';
   seedEntities = [];
 
-  // Pilihan warna dicampur aduk merata
-  let allColors = [];
-  for(let i=0; i<50; i++) allColors.push(SEED_COLORS_P1[i%3], SEED_COLORS_P2[i%3]);
-  allColors.sort(() => Math.random() - 0.5);
-
-  let cIdx = 0;
   for (let i = 0; i < TOTAL_PITS; i++) {
     const count = board[i];
     for (let j = 0; j < count; j++) {
       const el = document.createElement('div');
       el.className = 'physical-seed';
-      const c = allColors[cIdx++ % allColors.length];
+      // WARNA-WARNI PERMEN SECARA ACAK
+      const c = ALL_SEED_COLORS[Math.floor(Math.random() * ALL_SEED_COLORS.length)];
       el.style.cssText = `
         background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
         box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5);
       `;
       layer.appendChild(el);
-      seedEntities.push({ id: seedEntities.length, el, pit: i, x: 0, y: 0 });
+      seedEntities.push({ id: seedEntities.length, el, pit: i, x: 0, y: 0, scale: 1 });
     }
   }
 }
@@ -692,24 +750,21 @@ function snapAllSeeds() {
     const target = getPitTargetPosition(seedObj.pit, currentIdx);
     seedObj.x = target.x;
     seedObj.y = target.y;
-    seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px)`;
+    seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`;
   });
 }
 
-function animateSeedPhysics(seedObj, targetPos, isFast = false, isCapture = false) {
+// CAPTURE ANIMATION (ARC)
+function animateSeedCapture(seedObj, targetPos) {
   return new Promise(resolve => {
-    const startX = seedObj.x;
-    const startY = seedObj.y;
-    const dx = targetPos.x - startX;
-    const dy = targetPos.y - startY;
+    const dx = targetPos.x - seedObj.x;
+    const dy = targetPos.y - seedObj.y;
     const dist = Math.sqrt(dx*dx + dy*dy);
     
-    const baseDur = Math.min(600, Math.max(250, dist * 1.1));
-    const dur = isFast ? baseDur * 0.55 : baseDur;
-    
-    const arcHeight = isCapture ? -(dist * 0.4 + 25) : -(dist * 0.25 + 15);
-    const midX = startX + dx/2;
-    const midY = startY + dy/2 + arcHeight;
+    const dur = Math.min(600, Math.max(250, dist * 1.1));
+    const arcHeight = -(dist * 0.4 + 25);
+    const midX = seedObj.x + dx/2;
+    const midY = seedObj.y + dy/2 + arcHeight;
 
     anime({
       targets: seedObj,
@@ -719,7 +774,7 @@ function animateSeedPhysics(seedObj, targetPos, isFast = false, isCapture = fals
         { value: targetPos.y, duration: dur * 0.6, easing: 'easeOutBounce' }
       ],
       update: function() {
-        seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px)`;
+        seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`;
       },
       complete: resolve
     });
@@ -890,12 +945,13 @@ function onPitClick(index) {
   doMove(index);
 }
 
-// PHYSICS DRIVEN DOMOVE
+// ==========================================
+// THE INVISIBLE HAND LOGIC (Normal Speed)
+// ==========================================
 async function doMove(startIndex) {
   if (animating) return; animating = true; updateClickability(); cachePitRects(); 
 
   let curr = startIndex; let isRelay = true; let extraTurn = false;
-  const animSpeed = gameVariant === 'congklak';
 
   while (isRelay) {
     const seedsToMoveCount = board[curr];
@@ -906,30 +962,84 @@ async function doMove(startIndex) {
 
     const activePitEl = pitElements[curr];
     if (activePitEl) activePitEl.classList.add('active-pit');
-    updateTurnBadge('SOWING...', turn === 1 ? 'p1' : 'p2');
+    updateTurnBadge('MENGAMBIL...', turn === 1 ? 'p1' : 'p2');
+
+    // 1. TANGAN MENGANGKAT SEMUA BIJI
+    await new Promise(resolve => {
+      anime({
+        targets: movingSeeds,
+        x: () => pitRects[curr].x - SEED_SIZE/2 + (Math.random()*16-8),
+        y: () => pitRects[curr].y - SEED_SIZE/2 - 45 + (Math.random()*16-8),
+        scale: 1.3,
+        duration: 350,
+        easing: 'easeOutElastic(1, .8)',
+        update: function() {
+          movingSeeds.forEach(s => {
+            s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`;
+            s.el.style.zIndex = '100'; 
+          });
+        },
+        complete: resolve
+      });
+    });
+
+    updateTurnBadge('MENABUR...', turn === 1 ? 'p1' : 'p2');
 
     for (let s = 0; s < seedsToMoveCount; s++) {
       curr = (curr + 1) % TOTAL_PITS;
       if (turn === 1 && curr === P2_STORE) curr = (curr + 1) % TOTAL_PITS;
       if (turn === 2 && curr === P1_STORE) curr = (curr + 1) % TOTAL_PITS;
 
+      // 2. TANGAN BERGERAK KE LUBANG SELANJUTNYA
+      if(movingSeeds.length > 0) {
+        await new Promise(resolve => {
+          anime({
+            targets: movingSeeds,
+            x: () => pitRects[curr].x - SEED_SIZE/2 + (Math.random()*16-8),
+            y: () => pitRects[curr].y - SEED_SIZE/2 - 45 + (Math.random()*16-8),
+            duration: 250, 
+            easing: 'easeInOutSine',
+            update: function() {
+              movingSeeds.forEach(s => s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`);
+            },
+            complete: resolve
+          });
+        });
+      }
+
+      // 3. JATUHKAN SATU BIJI KE DALAM LUBANG
       let seedObj = movingSeeds.pop(); 
       if(!seedObj) break; 
       
       seedObj.pit = curr; board[curr]++;
       const targetPos = getPitTargetPosition(curr, board[curr] - 1);
       
-      const p = animateSeedPhysics(seedObj, targetPos, animSpeed);
-      if (s === seedsToMoveCount - 1) await p; else await sleep(animSpeed ? 40 : 80);
+      anime({
+         targets: seedObj,
+         x: targetPos.x,
+         y: targetPos.y,
+         scale: 1, 
+         duration: 400,
+         easing: 'easeOutBounce',
+         update: function() {
+            seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`;
+         },
+         complete: function() {
+            seedObj.el.style.zIndex = '1';
+         }
+      });
+
       updateCounts();
+      await sleep(100); // Jeda menabur yang santai
     }
 
     if (activePitEl) activePitEl.classList.remove('active-pit');
     const lastEl = pitElements[curr];
     if (lastEl) lastEl.classList.add('active-pit');
-    await sleep(animSpeed ? 150 : 250);
+    await sleep(350); 
     if (lastEl) lastEl.classList.remove('active-pit');
 
+    // KONDISI BERHENTI / LANJUT / CAPTURE
     if ((turn === 1 && curr === P1_STORE) || (turn === 2 && curr === P2_STORE)) {
       extraTurn = true; isRelay = false;
     } else if (board[curr] > 1) {
@@ -956,7 +1066,7 @@ async function doMove(startIndex) {
             seedObj.pit = storeIdx; board[storeIdx]++;
             const targetPos = getPitTargetPosition(storeIdx, board[storeIdx] - 1);
             promises.push(new Promise(async res => {
-              await sleep(index * 25); await animateSeedPhysics(seedObj, targetPos, animSpeed, true); res();
+              await sleep(index * 30); await animateSeedCapture(seedObj, targetPos); res();
             }));
           });
           await Promise.all(promises); updateCounts(); await sleep(300);
@@ -999,7 +1109,7 @@ async function checkGameOver() {
       const storeIdx = P1_PITS.includes(seedObj.pit) ? P1_STORE : P2_STORE;
       seedObj.pit = storeIdx;
       const targetPos = getPitTargetPosition(storeIdx, seedEntities.filter(s=>s.pit===storeIdx).length - 1);
-      promises.push(new Promise(async res => { await sleep(index * 20); await animateSeedPhysics(seedObj, targetPos, true, true); res(); }));
+      promises.push(new Promise(async res => { await sleep(index * 20); await animateSeedCapture(seedObj, targetPos); res(); }));
     });
     await Promise.all(promises); updateCounts();
   }
@@ -1052,10 +1162,21 @@ function startGame(mode) {
   setTimeout(updateClickability, 300);
 }
 
+function exitToMenu() {
+  gameActive = false; 
+  if (ably) { ably.close(); ably = null; } 
+  document.getElementById('seed-layer').innerHTML = ''; 
+  seedEntities = []; 
+  showScreen('lobby');
+}
+
 function showScreen(id) {
   ['lobby','waiting','game'].forEach(s => { document.getElementById(s)?.classList.toggle('hidden', s !== id); });
   const fsBtn = document.getElementById('btn-fs-global');
   if (fsBtn) fsBtn.style.display = (id === 'game') ? 'none' : 'inline-flex';
+  
+  const rulesBtn = document.getElementById('btn-rules-lobby');
+  if (rulesBtn) rulesBtn.style.display = (id === 'lobby') ? 'flex' : 'none';
 }
 
 function checkOrientation() {
@@ -1111,8 +1232,10 @@ function _doJoinRoom(code) {
 
 document.getElementById('btn-copy').onclick = () => { navigator.clipboard.writeText(document.getElementById('room-code-display').textContent).then(() => showToast('Kode disalin!')); };
 document.getElementById('btn-cancel').onclick = () => { if (ably) { ably.close(); ably = null; } showScreen('lobby'); };
-document.getElementById('btn-menu').onclick = () => { gameActive = false; if (ably) { ably.close(); ably = null; } showScreen('lobby'); };
-document.getElementById('go-menu').onclick = () => { document.getElementById('gameover-modal').classList.add('hidden'); gameActive = false; if (ably) { ably.close(); ably = null; } showScreen('lobby'); };
+
+document.getElementById('btn-menu').onclick = exitToMenu;
+document.getElementById('go-menu').onclick = () => { document.getElementById('gameover-modal').classList.add('hidden'); exitToMenu(); };
+
 document.getElementById('go-rematch').onclick = () => {
   document.getElementById('gameover-modal').classList.add('hidden');
   if (gameMode === 'online' && channel) { const nextStarter = startingPlayer === 1 ? 2 : 1; channel.publish('rematch', { startingPlayer: nextStarter }); } 
