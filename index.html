@@ -70,15 +70,15 @@
   .lobby-card {
     background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
     padding: 16px 24px; width: min(440px, 90vw);
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 8px;
     box-shadow: 0 20px 50px var(--shadow), 0 2px 8px rgba(30,41,59,0.04);
     transition: transform 0.3s;
   }
 
-  .variant-selector { display: flex; gap: 8px; background: var(--surface-2); padding: 6px; border-radius: 14px; border: 1px solid var(--line); }
+  .variant-selector { display: flex; gap: 8px; background: var(--surface-2); padding: 4px; border-radius: 12px; border: 1px solid var(--line); }
   .variant-btn {
     flex: 1; padding: 8px 0; text-align: center; font-size: 11px; font-weight: 700;
-    color: var(--ink-soft); border-radius: 10px; cursor: pointer; transition: all 0.2s;
+    color: var(--ink-soft); border-radius: 8px; cursor: pointer; transition: all 0.2s;
     display: flex; align-items: center; justify-content: center; gap: 6px;
   }
   .variant-btn svg { width: 14px; height: 14px; opacity: 0.6; transition: opacity 0.2s; }
@@ -86,7 +86,7 @@
   .variant-btn.active svg { opacity: 1; stroke: var(--accent); }
 
   .btn {
-    padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer;
+    padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;
     font-family: 'Inter', sans-serif; font-size: clamp(11px, 1.2vw, 13px);
     font-weight: 700; letter-spacing: 0.04em; transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
     position: relative; overflow: hidden;
@@ -115,7 +115,7 @@
   .status-dot.green { background: #22c55e; } .status-dot.yellow { background: #f59e0b; }
   @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
-  .divider { display: flex; align-items: center; gap: 12px; color: var(--ink-faint); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; }
+  .divider { display: flex; align-items: center; gap: 12px; color: var(--ink-faint); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; margin: 4px 0; }
   .divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--line); }
 
   /* ===== LANDSCAPE WARNING ===== */
@@ -188,6 +188,15 @@
   .pit.clickable:hover .pit-inner { box-shadow: inset 0 4px 12px rgba(30,41,59,0.10), inset 0 -2px 4px rgba(255,255,255,0.7), 0 0 0 3px currentColor, 0 4px 12px rgba(30,41,59,0.12); }
   .pit.p1-clickable { color: var(--p1-color); }
   .pit.p2-clickable { color: var(--p2-color); }
+  
+  /* GLOW FOR TARGET PIT (MANUAL MODE) */
+  .target-pit .pit-inner, .target-pit .store-inner {
+    box-shadow: inset 0 4px 12px rgba(30,41,59,0.10), inset 0 -2px 4px rgba(255,255,255,0.7), 0 0 0 4px var(--gold), 0 0 20px rgba(245, 158, 11, 0.65) !important;
+    animation: pulse-target 1s ease-in-out infinite alternate;
+    cursor: pointer !important;
+  }
+  @keyframes pulse-target { from { transform: scale(1); } to { transform: scale(1.1); } }
+
   .pit.active-pit .pit-inner { box-shadow: inset 0 4px 12px rgba(30,41,59,0.10), 0 0 0 3px var(--emerald), 0 0 16px rgba(16,185,129,0.45); }
   .pit.active-pit { animation: pit-pop 0.35s ease; }
   
@@ -199,7 +208,7 @@
   }
 
   .store-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .store { position: relative; border-radius: 40px; overflow: visible; transition: box-shadow 0.3s; }
+  .store { position: relative; border-radius: 40px; overflow: visible; transition: transform 0.15s ease, box-shadow 0.3s; }
   .store-inner {
     position: absolute; inset: 0; border-radius: 40px;
     background: radial-gradient(ellipse at 40% 22%, rgba(255,255,255,0.9) 0%, transparent 50%), radial-gradient(ellipse at 50% 60%, var(--pit-bg) 0%, #dde4ee 100%);
@@ -229,18 +238,18 @@
   
   .name-modal-box {
     background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
-    padding: 20px 24px; text-align: center; min-width: min(400px, 92vw);
-    box-shadow: 0 32px 80px rgba(30,41,59,0.25); display: flex; flex-direction: column; gap: 12px;
+    padding: 16px 20px; text-align: center; min-width: min(380px, 92vw);
+    box-shadow: 0 32px 80px rgba(30,41,59,0.25); display: flex; flex-direction: column; gap: 10px;
     animation: modal-in 0.3s ease;
   }
   @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
   
-  .name-modal-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: 0.02em; margin-bottom: 4px; }
+  .name-modal-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: 0.02em; margin-bottom: 2px; text-align: left; }
   .name-row { display: flex; align-items: center; gap: 8px; width: 100%; }
   
   .name-avatar {
-    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700; flex-shrink: 0;
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 700; flex-shrink: 0;
   }
   .name-avatar.p1 { background: var(--accent-soft); color: var(--p1-color); border: 1px solid rgba(37,99,235,0.25); }
   .name-avatar.p2 { background: rgba(244,63,94,0.10); color: var(--p2-color); border: 1px solid rgba(244,63,94,0.25); }
@@ -292,6 +301,7 @@
 
   /* ===== KEYBOARD FIX ===== */
   body.keyboard-open .modal-overlay { align-items: flex-start; padding-top: 5vh; }
+  body.keyboard-open #lobby { padding-top: 0; justify-content: flex-start; padding-top: 5vh; }
 
   /* ===== MODAL CLOSE BTN ===== */
   .modal-close {
@@ -407,8 +417,19 @@
         Congklak (Relay)
       </div>
     </div>
+    
+    <div class="variant-selector" style="margin-top: -2px;">
+      <div class="variant-btn active" id="btn-sow-auto" onclick="setSowingMode('auto')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        Tabur Otomatis
+      </div>
+      <div class="variant-btn" id="btn-sow-manual" onclick="setSowingMode('manual')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
+        Tabur Manual
+      </div>
+    </div>
 
-    <button class="btn btn-gold btn-icon" id="btn-local">
+    <button class="btn btn-gold btn-icon" id="btn-local" style="margin-top: 4px;">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>
       LOCAL 2 PLAYERS
     </button>
@@ -498,15 +519,11 @@
 
 <script>
 // ==========================================
-// KEYBOARD & INPUT FOCUS FIX (Landscape)
+// KEYBOARD & INPUT FOCUS FIX
 // ==========================================
 document.querySelectorAll('.input-field').forEach(input => {
-  input.addEventListener('focus', () => {
-    document.body.classList.add('keyboard-open');
-  });
-  input.addEventListener('blur', () => {
-    document.body.classList.remove('keyboard-open');
-  });
+  input.addEventListener('focus', () => document.body.classList.add('keyboard-open'));
+  input.addEventListener('blur', () => document.body.classList.remove('keyboard-open'));
 });
 
 // ==========================================
@@ -514,7 +531,9 @@ document.querySelectorAll('.input-field').forEach(input => {
 // ==========================================
 const ABLY_KEY = '4opURQ.FVPiqg:z5W8zQxWoBNlXmlAXvOv4Bz1bmn_ISnFucJGpjFijS8';
 
-let gameVariant = 'mancala';
+let gameVariant = 'mancala'; // mancala / congklak
+let sowingMode = 'auto'; // auto / manual
+
 let INITIAL_SEEDS = 4;
 let TOTAL_PITS = 14;
 let P1_STORE = 6;
@@ -537,15 +556,20 @@ let isHost = false;
 let playerNames = { 1: 'PLAYER 1', 2: 'PLAYER 2' };
 let myGlobalName = '';
 
-// PALET WARNA-WARNI PERMEN (Semua biji menggunakan ini, tidak peduli player siapa)
+// MANUAL MODE VARIABLES
+let heldSeeds = 0;
+let currentSowPit = -1;
+let movingSeedsArray = [];
+
+// PALET WARNA-WARNI PERMEN ACAK
 const ALL_SEED_COLORS = [
   { base:'#2563EB', shine:'#BFDBFE', dark:'#1E3A8A' }, // Biru
   { base:'#0EA5E9', shine:'#BAE6FD', dark:'#075985' }, // Cyan
   { base:'#6366F1', shine:'#C7D2FE', dark:'#3730A3' }, // Indigo
-  { base:'#F43F5E', shine:'#FECDD3', dark:'#9F1239' }, // Pink/Rose
-  { base:'#F59E0B', shine:'#FDE68A', dark:'#92400E' }, // Emas/Kuning
+  { base:'#F43F5E', shine:'#FECDD3', dark:'#9F1239' }, // Pink
+  { base:'#F59E0B', shine:'#FDE68A', dark:'#92400E' }, // Emas
   { base:'#EC4899', shine:'#FBCFE8', dark:'#9D174D' }, // Magenta
-  { base:'#10B981', shine:'#A7F3D0', dark:'#065F46' }, // Zamrud/Hijau
+  { base:'#10B981', shine:'#A7F3D0', dark:'#065F46' }, // Zamrud
   { base:'#8B5CF6', shine:'#DDD6FE', dark:'#4C1D95' }, // Ungu
 ];
 
@@ -563,6 +587,12 @@ function setVariant(variant) {
   document.getElementById('btn-var-mancala').classList.toggle('active', variant === 'mancala');
   document.getElementById('btn-var-congklak').classList.toggle('active', variant === 'congklak');
   setupGameRules();
+}
+
+function setSowingMode(mode) {
+  sowingMode = mode;
+  document.getElementById('btn-sow-auto').classList.toggle('active', mode === 'auto');
+  document.getElementById('btn-sow-manual').classList.toggle('active', mode === 'manual');
 }
 
 function setupGameRules() {
@@ -596,6 +626,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// UI EVENT LISTENERS
 document.getElementById('btn-change-name').onclick = () => {
   const input = document.getElementById('input-global-name');
   if (input) input.value = myGlobalName || '';
@@ -616,12 +647,8 @@ document.getElementById('input-global-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btn-save-global-name').click();
 });
 
-document.getElementById('btn-rules-lobby').onclick = () => {
-  document.getElementById('rules-modal').classList.remove('hidden');
-};
-document.getElementById('rules-confirm').onclick = () => {
-  document.getElementById('rules-modal').classList.add('hidden');
-};
+document.getElementById('btn-rules-lobby').onclick = () => document.getElementById('rules-modal').classList.remove('hidden');
+document.getElementById('rules-confirm').onclick = () => document.getElementById('rules-modal').classList.add('hidden');
 
 document.getElementById('btn-local').onclick = () => {
   document.getElementById('p2-name-modal').classList.remove('hidden');
@@ -639,19 +666,16 @@ document.getElementById('input-p2-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btn-start-local').click();
 });
 
-// MODAL JOIN ROOM BARU
 document.getElementById('btn-open-join').onclick = () => {
   document.getElementById('join-modal').classList.remove('hidden');
   setTimeout(() => document.getElementById('join-code').focus(), 100);
 };
-
 document.getElementById('btn-join-submit').onclick = () => {
   const code = document.getElementById('join-code').value.trim();
   if (code.length !== 4) { showToast('Masukkan 4 digit kode'); return; }
   document.getElementById('join-modal').classList.add('hidden');
   _doJoinRoom(code);
 };
-
 document.getElementById('join-code').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btn-join-submit').click();
 });
@@ -661,37 +685,27 @@ document.getElementById('btn-create').onclick = () => _doCreateRoom();
 // ==========================================
 // BACKGROUND MUSIC
 // ==========================================
-let bgmTracks = [];
-let currentTrackIdx = 0;
-let bgmAudio = new Audio();
-bgmAudio.volume = 0.25;
+let bgmTracks = []; let currentTrackIdx = 0; let bgmAudio = new Audio(); bgmAudio.volume = 0.25;
 
 async function initBGM() {
   try {
     const res = await fetch('https://itunes.apple.com/search?term=lofi+chill+beats+instrumental&entity=song&limit=50');
     const data = await res.json();
     let tracks = data.results.filter(t => t.previewUrl).map(t => t.previewUrl);
-    for (let i = tracks.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
-    }
+    for (let i = tracks.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [tracks[i], tracks[j]] = [tracks[j], tracks[i]]; }
     bgmTracks = tracks;
   } catch(e) { }
 }
 function playBGM() {
   if (bgmTracks.length === 0) return;
-  bgmAudio.src = bgmTracks[currentTrackIdx];
-  bgmAudio.play().catch(()=>{});
-  bgmAudio.onended = () => {
-    currentTrackIdx = (currentTrackIdx + 1) % bgmTracks.length;
-    playBGM();
-  };
+  bgmAudio.src = bgmTracks[currentTrackIdx]; bgmAudio.play().catch(()=>{});
+  bgmAudio.onended = () => { currentTrackIdx = (currentTrackIdx + 1) % bgmTracks.length; playBGM(); };
 }
 document.addEventListener('click', () => { if (bgmAudio.paused && bgmTracks.length > 0) playBGM(); }, { once: true, capture: true });
 initBGM();
 
 // ==========================================
-// PHYSICAL SEEDS SYSTEM (GRASPING & SOWING)
+// PHYSICAL SEEDS SYSTEM
 // ==========================================
 let seedEntities = [];
 let seedLayouts = {};
@@ -702,29 +716,21 @@ const SEED_SIZE = 14;
 function generateSeedLayout(capacity = 100) {
   const layouts = []; const goldenAngle = 2.399963;
   for (let i = 0; i < capacity; i++) {
-    const r = 0.36 * Math.sqrt(i / capacity);
-    const theta = i * goldenAngle;
+    const r = 0.36 * Math.sqrt(i / capacity); const theta = i * goldenAngle;
     layouts.push({ cx: 0.5 + r * Math.cos(theta), cy: 0.5 + r * Math.sin(theta) });
   }
   return layouts;
 }
 
 function initPhysicalSeeds() {
-  const layer = document.getElementById('seed-layer');
-  layer.innerHTML = '';
-  seedEntities = [];
-
+  const layer = document.getElementById('seed-layer'); layer.innerHTML = ''; seedEntities = [];
   for (let i = 0; i < TOTAL_PITS; i++) {
     const count = board[i];
     for (let j = 0; j < count; j++) {
-      const el = document.createElement('div');
-      el.className = 'physical-seed';
-      // WARNA-WARNI PERMEN SECARA ACAK
+      const el = document.createElement('div'); el.className = 'physical-seed';
       const c = ALL_SEED_COLORS[Math.floor(Math.random() * ALL_SEED_COLORS.length)];
-      el.style.cssText = `
-        background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
-        box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5);
-      `;
+      el.style.cssText = `background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
+        box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5);`;
       layer.appendChild(el);
       seedEntities.push({ id: seedEntities.length, el, pit: i, x: 0, y: 0, scale: 1 });
     }
@@ -732,50 +738,31 @@ function initPhysicalSeeds() {
 }
 
 function getPitTargetPosition(pitIndex, indexInPit) {
-  const rect = pitRects[pitIndex];
-  if (!rect) return { x:0, y:0 };
+  const rect = pitRects[pitIndex]; if (!rect) return { x:0, y:0 };
   const layout = seedLayouts[pitIndex][indexInPit % 100];
-  return {
-    x: rect.x - rect.w/2 + layout.cx * rect.w - (SEED_SIZE/2),
-    y: rect.y - rect.h/2 + layout.cy * rect.h - (SEED_SIZE/2)
-  };
+  return { x: rect.x - rect.w/2 + layout.cx * rect.w - (SEED_SIZE/2), y: rect.y - rect.h/2 + layout.cy * rect.h - (SEED_SIZE/2) };
 }
 
 function snapAllSeeds() {
-  cachePitRects();
-  if(Object.keys(pitRects).length === 0) return;
+  cachePitRects(); if(Object.keys(pitRects).length === 0) return;
   let pitIndexCounts = Array(TOTAL_PITS).fill(0);
   seedEntities.forEach(seedObj => {
     let currentIdx = pitIndexCounts[seedObj.pit]++;
     const target = getPitTargetPosition(seedObj.pit, currentIdx);
-    seedObj.x = target.x;
-    seedObj.y = target.y;
+    seedObj.x = target.x; seedObj.y = target.y;
     seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`;
   });
 }
 
-// CAPTURE ANIMATION (ARC)
 function animateSeedCapture(seedObj, targetPos) {
   return new Promise(resolve => {
-    const dx = targetPos.x - seedObj.x;
-    const dy = targetPos.y - seedObj.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    
+    const dx = targetPos.x - seedObj.x; const dy = targetPos.y - seedObj.y; const dist = Math.sqrt(dx*dx + dy*dy);
     const dur = Math.min(600, Math.max(250, dist * 1.1));
-    const arcHeight = -(dist * 0.4 + 25);
-    const midX = seedObj.x + dx/2;
-    const midY = seedObj.y + dy/2 + arcHeight;
-
+    const arcHeight = -(dist * 0.4 + 25); const midX = seedObj.x + dx/2; const midY = seedObj.y + dy/2 + arcHeight;
     anime({
-      targets: seedObj,
-      x: [ { value: targetPos.x, duration: dur, easing: 'linear' } ],
-      y: [
-        { value: midY, duration: dur * 0.4, easing: 'easeOutSine' },
-        { value: targetPos.y, duration: dur * 0.6, easing: 'easeOutBounce' }
-      ],
-      update: function() {
-        seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`;
-      },
+      targets: seedObj, x: [ { value: targetPos.x, duration: dur, easing: 'linear' } ],
+      y: [ { value: midY, duration: dur * 0.4, easing: 'easeOutSine' }, { value: targetPos.y, duration: dur * 0.6, easing: 'easeOutBounce' } ],
+      update: function() { seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`; },
       complete: resolve
     });
   });
@@ -786,48 +773,34 @@ function animateSeedCapture(seedObj, targetPos) {
 // ==========================================
 function createBoard() {
   board = Array(TOTAL_PITS).fill(0);
-  P1_PITS.forEach(i => board[i] = INITIAL_SEEDS);
-  P2_PITS.forEach(i => board[i] = INITIAL_SEEDS);
+  P1_PITS.forEach(i => board[i] = INITIAL_SEEDS); P2_PITS.forEach(i => board[i] = INITIAL_SEEDS);
 }
 
 function buildBoard() {
-  const wrap = document.getElementById('board-wrap');
-  wrap.innerHTML = '';
-
-  const board_el = document.createElement('div');
-  board_el.className = 'board';
+  const wrap = document.getElementById('board-wrap'); wrap.innerHTML = '';
+  const board_el = document.createElement('div'); board_el.className = 'board';
 
   const vw = window.innerWidth, vh = window.innerHeight;
-  const availH = vh - 90;
-  const availW = vw * 0.94;
-
-  const GAP = 6; const STORE_RATIO = 1.2; const STORE_H_RATIO = 2.0;
-  const BOARD_PAD = 12; const STORE_MARGIN = 8;
+  const availH = vh - 90; const availW = vw * 0.94;
+  const GAP = 6; const STORE_RATIO = 1.2; const STORE_H_RATIO = 2.0; const BOARD_PAD = 12; const STORE_MARGIN = 8;
   const numPitsRow = P1_PITS.length;
 
   const pitSizeW = Math.floor((availW - 2*BOARD_PAD - 2*STORE_MARGIN - (numPitsRow-1)*GAP) / (numPitsRow + 2*STORE_RATIO));
   const pitSizeH = Math.floor((availH - 2*BOARD_PAD - 24) / 2);
   const pitSize = Math.max(32, Math.min(pitSizeW, pitSizeH));
-
-  const storeW = Math.floor(pitSize * STORE_RATIO);
-  const storeH = Math.min(Math.floor(pitSize * STORE_H_RATIO), availH - 30);
+  const storeW = Math.floor(pitSize * STORE_RATIO); const storeH = Math.min(Math.floor(pitSize * STORE_H_RATIO), availH - 30);
 
   for (let i = 0; i < TOTAL_PITS; i++) seedLayouts[i] = generateSeedLayout(100);
 
-  // Dynamic Perspective
   let topPits, bottomPits, leftStoreIdx, rightStoreIdx, topNameCls, bottomNameCls, topLblText, bottomLblText;
   if (myPlayer === 1) { 
-    topPits = P2_PITS.slice().reverse(); bottomPits = P1_PITS; 
-    leftStoreIdx = P2_STORE; rightStoreIdx = P1_STORE;
+    topPits = P2_PITS.slice().reverse(); bottomPits = P1_PITS; leftStoreIdx = P2_STORE; rightStoreIdx = P1_STORE;
     topNameCls = 'p2'; bottomNameCls = 'p1';
-    topLblText = (playerNames[2] || 'PLAYER 2').toUpperCase() + ' ▲';
-    bottomLblText = '▼ ' + (playerNames[1] || 'PLAYER 1').toUpperCase();
+    topLblText = (playerNames[2] || 'PLAYER 2').toUpperCase() + ' ▲'; bottomLblText = '▼ ' + (playerNames[1] || 'PLAYER 1').toUpperCase();
   } else { 
-    topPits = P1_PITS.slice().reverse(); bottomPits = P2_PITS;
-    leftStoreIdx = P1_STORE; rightStoreIdx = P2_STORE;
+    topPits = P1_PITS.slice().reverse(); bottomPits = P2_PITS; leftStoreIdx = P1_STORE; rightStoreIdx = P2_STORE;
     topNameCls = 'p1'; bottomNameCls = 'p2';
-    topLblText = (playerNames[1] || 'PLAYER 1').toUpperCase() + ' ▲';
-    bottomLblText = '▼ ' + (playerNames[2] || 'PLAYER 2').toUpperCase();
+    topLblText = (playerNames[1] || 'PLAYER 1').toUpperCase() + ' ▲'; bottomLblText = '▼ ' + (playerNames[2] || 'PLAYER 2').toUpperCase();
   }
 
   const storeLeftWrap = makeStore(leftStoreIdx, myPlayer === 1 ? 2 : 1, storeW, storeH);
@@ -854,12 +827,7 @@ function buildBoard() {
   board_el.appendChild(storeLeftWrap); board_el.appendChild(pitsCol); board_el.appendChild(storeRightWrap);
   wrap.appendChild(board_el);
 
-  requestAnimationFrame(() => {
-    cachePitRects();
-    initPhysicalSeeds();
-    snapAllSeeds();
-    updateCounts();
-  });
+  requestAnimationFrame(() => { cachePitRects(); initPhysicalSeeds(); snapAllSeeds(); updateCounts(); });
 }
 
 function makePit(index, size) {
@@ -867,8 +835,7 @@ function makePit(index, size) {
   const pit = document.createElement('div'); pit.className = 'pit'; pit.id = `pit-${index}`;
   pit.style.width = pit.style.height = size + 'px';
   pit.addEventListener('click', () => onPitClick(index));
-  const inner = document.createElement('div'); inner.className = 'pit-inner';
-  pit.appendChild(inner);
+  const inner = document.createElement('div'); inner.className = 'pit-inner'; pit.appendChild(inner);
   const count = document.createElement('div'); count.className = 'pit-count'; count.id = `count-${index}`; count.textContent = '0';
   wrap.appendChild(pit); wrap.appendChild(count); pitElements[index] = pit;
   return wrap;
@@ -882,8 +849,8 @@ function makeStore(index, playerOwner, w, h) {
   const cnt = document.createElement('div'); cnt.className = 'store-count'; cnt.id = `count-${index}`; cnt.textContent = '0';
   const store = document.createElement('div'); store.className = 'store'; store.id = `pit-${index}`;
   store.style.width = w + 'px'; store.style.height = h + 'px';
-  const inner = document.createElement('div'); inner.className = 'store-inner';
-  store.appendChild(inner); pitElements[index] = store;
+  store.addEventListener('click', () => onPitClick(index)); // STORE CLICK UNTUK MANUAL MODE
+  const inner = document.createElement('div'); inner.className = 'store-inner'; store.appendChild(inner); pitElements[index] = store;
 
   if (playerOwner === myPlayer) { wrap.appendChild(lbl); wrap.appendChild(store); wrap.appendChild(cnt); } 
   else { wrap.appendChild(cnt); wrap.appendChild(store); wrap.appendChild(lbl); }
@@ -893,34 +860,41 @@ function makeStore(index, playerOwner, w, h) {
 function cachePitRects() {
   for (let i = 0; i < TOTAL_PITS; i++) {
     const el = pitElements[i];
-    if (el) {
-      const r = el.getBoundingClientRect();
-      pitRects[i] = { x: r.left + r.width/2, y: r.top + r.height/2, w: r.width, h: r.height };
-    }
+    if (el) { const r = el.getBoundingClientRect(); pitRects[i] = { x: r.left + r.width/2, y: r.top + r.height/2, w: r.width, h: r.height }; }
   }
 }
 
 function updateCounts() {
-  for (let i = 0; i < TOTAL_PITS; i++) {
-    const el = document.getElementById(`count-${i}`);
-    if (el) el.textContent = board[i];
-  }
+  for (let i = 0; i < TOTAL_PITS; i++) { const el = document.getElementById(`count-${i}`); if (el) el.textContent = board[i]; }
   const s1 = document.getElementById('score-p1'); const s2 = document.getElementById('score-p2');
   if (s1 && s1.textContent !== String(board[P1_STORE])) { s1.textContent = board[P1_STORE]; s1.classList.remove('bump'); void s1.offsetWidth; s1.classList.add('bump'); }
   if (s2 && s2.textContent !== String(board[P2_STORE])) { s2.textContent = board[P2_STORE]; s2.classList.remove('bump'); void s2.offsetWidth; s2.classList.add('bump'); }
 }
 
+function removeAllHighlights() {
+  for (let i = 0; i < TOTAL_PITS; i++) {
+    if (pitElements[i]) pitElements[i].classList.remove('clickable', 'p1-clickable', 'p2-clickable', 'target-pit');
+  }
+}
+
 function updateClickability() {
-  if (!gameActive || animating) {
-    for (let i = 0; i < TOTAL_PITS; i++) { if (pitElements[i]) pitElements[i].classList.remove('clickable', 'p1-clickable', 'p2-clickable'); }
+  if (!gameActive || animating) { removeAllHighlights(); return; }
+  removeAllHighlights();
+
+  if (sowingMode === 'manual' && heldSeeds > 0) {
+    if (canIPlay()) {
+      const el = pitElements[currentSowPit];
+      if (el) el.classList.add('clickable', 'target-pit');
+    }
     return;
   }
+
   P1_PITS.forEach(i => {
-    const el = pitElements[i]; if (!el) return; el.classList.remove('clickable','p1-clickable','p2-clickable');
+    const el = pitElements[i]; if (!el) return;
     if (turn === 1 && board[i] > 0 && canIPlay()) el.classList.add('clickable','p1-clickable');
   });
   P2_PITS.forEach(i => {
-    const el = pitElements[i]; if (!el) return; el.classList.remove('clickable','p1-clickable','p2-clickable');
+    const el = pitElements[i]; if (!el) return;
     if (turn === 2 && board[i] > 0 && canIPlay()) el.classList.add('clickable','p2-clickable');
   });
   const rowP1 = document.getElementById('row-p1'); const rowP2 = document.getElementById('row-p2');
@@ -933,22 +907,38 @@ function updateTurnBadge(htmlMsg, cls = 'neutral') {
   if (badge) { badge.innerHTML = htmlMsg; badge.className = `turn-badge ${cls}`; }
 }
 
+function getNextValidPit(curr, activeTurn) {
+  let next = (curr + 1) % TOTAL_PITS;
+  if (activeTurn === 1 && next === P2_STORE) next = (next + 1) % TOTAL_PITS;
+  if (activeTurn === 2 && next === P1_STORE) next = (next + 1) % TOTAL_PITS;
+  return next;
+}
+
 function onPitClick(index) {
   if (!gameActive || animating) return;
-  const isP1Pit = P1_PITS.includes(index); const isP2Pit = P2_PITS.includes(index);
-  if (!isP1Pit && !isP2Pit) return;
-  if (turn === 1 && !isP1Pit) return;
-  if (turn === 2 && !isP2Pit) return;
-  if (board[index] === 0) return;
+
+  if (sowingMode === 'manual' && heldSeeds > 0) {
+    if (index !== currentSowPit) return; // Hanya target valid yang boleh
+  } else {
+    const isP1Pit = P1_PITS.includes(index); const isP2Pit = P2_PITS.includes(index);
+    if (!isP1Pit && !isP2Pit) return;
+    if (turn === 1 && !isP1Pit) return;
+    if (turn === 2 && !isP2Pit) return;
+    if (board[index] === 0) return;
+  }
+
   if (!canIPlay()) { showToast('Tunggu giliranmu!'); return; }
+
   if (gameMode === 'online') channel.publish('move', { from: index, board: JSON.parse(JSON.stringify(board)), turn });
-  doMove(index);
+  
+  if (sowingMode === 'auto') doMoveAuto(index);
+  else doMoveManual(index);
 }
 
 // ==========================================
-// THE INVISIBLE HAND LOGIC (Normal Speed)
+// AUTO SOWING
 // ==========================================
-async function doMove(startIndex) {
+async function doMoveAuto(startIndex) {
   if (animating) return; animating = true; updateClickability(); cachePitRects(); 
 
   let curr = startIndex; let isRelay = true; let extraTurn = false;
@@ -964,21 +954,13 @@ async function doMove(startIndex) {
     if (activePitEl) activePitEl.classList.add('active-pit');
     updateTurnBadge('MENGAMBIL...', turn === 1 ? 'p1' : 'p2');
 
-    // 1. TANGAN MENGANGKAT SEMUA BIJI
     await new Promise(resolve => {
       anime({
         targets: movingSeeds,
         x: () => pitRects[curr].x - SEED_SIZE/2 + (Math.random()*16-8),
         y: () => pitRects[curr].y - SEED_SIZE/2 - 45 + (Math.random()*16-8),
-        scale: 1.3,
-        duration: 350,
-        easing: 'easeOutElastic(1, .8)',
-        update: function() {
-          movingSeeds.forEach(s => {
-            s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`;
-            s.el.style.zIndex = '100'; 
-          });
-        },
+        scale: 1.3, duration: 350, easing: 'easeOutElastic(1, .8)',
+        update: function() { movingSeeds.forEach(s => { s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`; s.el.style.zIndex = '100'; }); },
         complete: resolve
       });
     });
@@ -986,28 +968,21 @@ async function doMove(startIndex) {
     updateTurnBadge('MENABUR...', turn === 1 ? 'p1' : 'p2');
 
     for (let s = 0; s < seedsToMoveCount; s++) {
-      curr = (curr + 1) % TOTAL_PITS;
-      if (turn === 1 && curr === P2_STORE) curr = (curr + 1) % TOTAL_PITS;
-      if (turn === 2 && curr === P1_STORE) curr = (curr + 1) % TOTAL_PITS;
+      curr = getNextValidPit(curr, turn);
 
-      // 2. TANGAN BERGERAK KE LUBANG SELANJUTNYA
       if(movingSeeds.length > 0) {
         await new Promise(resolve => {
           anime({
             targets: movingSeeds,
             x: () => pitRects[curr].x - SEED_SIZE/2 + (Math.random()*16-8),
             y: () => pitRects[curr].y - SEED_SIZE/2 - 45 + (Math.random()*16-8),
-            duration: 250, 
-            easing: 'easeInOutSine',
-            update: function() {
-              movingSeeds.forEach(s => s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`);
-            },
+            duration: 250, easing: 'easeInOutSine',
+            update: function() { movingSeeds.forEach(s => s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`); },
             complete: resolve
           });
         });
       }
 
-      // 3. JATUHKAN SATU BIJI KE DALAM LUBANG
       let seedObj = movingSeeds.pop(); 
       if(!seedObj) break; 
       
@@ -1015,31 +990,18 @@ async function doMove(startIndex) {
       const targetPos = getPitTargetPosition(curr, board[curr] - 1);
       
       anime({
-         targets: seedObj,
-         x: targetPos.x,
-         y: targetPos.y,
-         scale: 1, 
-         duration: 400,
-         easing: 'easeOutBounce',
-         update: function() {
-            seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`;
-         },
-         complete: function() {
-            seedObj.el.style.zIndex = '1';
-         }
+         targets: seedObj, x: targetPos.x, y: targetPos.y, scale: 1, duration: 400, easing: 'easeOutBounce',
+         update: function() { seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`; },
+         complete: function() { seedObj.el.style.zIndex = '1'; }
       });
-
-      updateCounts();
-      await sleep(100); // Jeda menabur yang santai
+      updateCounts(); await sleep(100);
     }
 
     if (activePitEl) activePitEl.classList.remove('active-pit');
-    const lastEl = pitElements[curr];
-    if (lastEl) lastEl.classList.add('active-pit');
+    const lastEl = pitElements[curr]; if (lastEl) lastEl.classList.add('active-pit');
     await sleep(350); 
     if (lastEl) lastEl.classList.remove('active-pit');
 
-    // KONDISI BERHENTI / LANJUT / CAPTURE
     if ((turn === 1 && curr === P1_STORE) || (turn === 2 && curr === P2_STORE)) {
       extraTurn = true; isRelay = false;
     } else if (board[curr] > 1) {
@@ -1054,8 +1016,7 @@ async function doMove(startIndex) {
           const storeIdx = turn === 1 ? P1_STORE : P2_STORE;
           const capName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
           updateTurnBadge(`${SVGS.zap} CAPTURE!`, turn === 1 ? 'p1' : 'p2');
-          document.getElementById('turn-badge').classList.add('pulse');
-          setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
+          document.getElementById('turn-badge').classList.add('pulse'); setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
           showToast(`${SVGS.zap} <span>${capName} menangkap biji!</span>`);
 
           let capSeeds = seedEntities.filter(s => s.pit === oppIndex || s.pit === curr);
@@ -1065,21 +1026,142 @@ async function doMove(startIndex) {
           capSeeds.forEach((seedObj, index) => {
             seedObj.pit = storeIdx; board[storeIdx]++;
             const targetPos = getPitTargetPosition(storeIdx, board[storeIdx] - 1);
-            promises.push(new Promise(async res => {
-              await sleep(index * 30); await animateSeedCapture(seedObj, targetPos); res();
-            }));
+            promises.push(new Promise(async res => { await sleep(index * 30); await animateSeedCapture(seedObj, targetPos); res(); }));
           });
           await Promise.all(promises); updateCounts(); await sleep(300);
         }
       }
     }
   }
+  finishTurn(extraTurn);
+}
 
+// ==========================================
+// MANUAL SOWING
+// ==========================================
+async function doMoveManual(index) {
+  if (animating) return; animating = true; updateClickability(); cachePitRects();
+
+  if (heldSeeds === 0) {
+    heldSeeds = board[index]; board[index] = 0; updateCounts();
+    movingSeedsArray = seedEntities.filter(s => s.pit === index);
+    
+    updateTurnBadge(`MENGANGKAT... (${heldSeeds})`, turn === 1 ? 'p1' : 'p2');
+    const activePitEl = pitElements[index]; if (activePitEl) activePitEl.classList.add('active-pit');
+
+    await new Promise(resolve => {
+      anime({
+        targets: movingSeedsArray,
+        x: () => pitRects[index].x - SEED_SIZE/2 + (Math.random()*16-8),
+        y: () => pitRects[index].y - SEED_SIZE/2 - 45 + (Math.random()*16-8),
+        scale: 1.3, duration: 350, easing: 'easeOutElastic(1, .8)',
+        update: function() { movingSeedsArray.forEach(s => { s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`; s.el.style.zIndex = '100'; }); },
+        complete: resolve
+      });
+    });
+
+    if (activePitEl) activePitEl.classList.remove('active-pit');
+    currentSowPit = getNextValidPit(index, turn);
+    animating = false;
+    updateTurnBadge(`SISA: ${heldSeeds} BIJI`, turn === 1 ? 'p1' : 'p2');
+    updateClickability(); 
+    return;
+  }
+
+  // JIKA SEDANG MEMEGANG BIJI (DROP)
+  let seedObj = movingSeedsArray.pop();
+  if (seedObj) {
+    seedObj.pit = currentSowPit; board[currentSowPit]++;
+    const targetPos = getPitTargetPosition(currentSowPit, board[currentSowPit] - 1);
+    updateCounts();
+
+    if (movingSeedsArray.length > 0) {
+      anime({
+        targets: movingSeedsArray,
+        x: () => pitRects[currentSowPit].x - SEED_SIZE/2 + (Math.random()*16-8),
+        y: () => pitRects[currentSowPit].y - SEED_SIZE/2 - 45 + (Math.random()*16-8),
+        duration: 150, easing: 'easeInOutSine',
+        update: function() { movingSeedsArray.forEach(s => s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`); }
+      });
+    }
+
+    await new Promise(resolve => {
+      anime({
+         targets: seedObj, x: targetPos.x, y: targetPos.y, scale: 1, duration: 250, easing: 'easeOutBounce',
+         update: function() { seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px) scale(${seedObj.scale})`; },
+         complete: function() { seedObj.el.style.zIndex = '1'; resolve(); }
+      });
+    });
+    heldSeeds--;
+    updateTurnBadge(heldSeeds > 0 ? `SISA: ${heldSeeds} BIJI` : `MENGECEK LUBANG...`, turn === 1 ? 'p1' : 'p2');
+  }
+
+  if (heldSeeds > 0) {
+    currentSowPit = getNextValidPit(currentSowPit, turn);
+    animating = false; updateClickability(); return;
+  }
+
+  // OUT OF SEEDS! Evaluasi
+  const curr = currentSowPit; 
+  const activePitEl = pitElements[curr]; if (activePitEl) activePitEl.classList.add('active-pit');
+  await sleep(350);
+  if (activePitEl) activePitEl.classList.remove('active-pit');
+
+  let extraTurn = false;
+  if ((turn === 1 && curr === P1_STORE) || (turn === 2 && curr === P2_STORE)) {
+    extraTurn = true;
+  } else if (board[curr] > 1) {
+    if (gameVariant === 'congklak') {
+      updateTurnBadge(`${SVGS.refresh} RELAY!`, turn === 1 ? 'p1' : 'p2'); await sleep(200);
+      heldSeeds = board[curr]; board[curr] = 0; updateCounts();
+      movingSeedsArray = seedEntities.filter(s => s.pit === curr);
+      
+      await new Promise(resolve => {
+        anime({
+          targets: movingSeedsArray,
+          x: () => pitRects[curr].x - SEED_SIZE/2 + (Math.random()*16-8), y: () => pitRects[curr].y - SEED_SIZE/2 - 45 + (Math.random()*16-8),
+          scale: 1.3, duration: 350, easing: 'easeOutElastic(1, .8)',
+          update: function() { movingSeedsArray.forEach(s => { s.el.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale})`; s.el.style.zIndex = '100'; }); },
+          complete: resolve
+        });
+      });
+      currentSowPit = getNextValidPit(curr, turn);
+      animating = false; updateClickability(); return;
+    }
+  } else {
+    const isOwnSide = (turn === 1 && P1_PITS.includes(curr)) || (turn === 2 && P2_PITS.includes(curr));
+    if (isOwnSide) {
+      const oppIndex = (TOTAL_PITS - 2) - curr;
+      if (board[oppIndex] > 0) {
+        const storeIdx = turn === 1 ? P1_STORE : P2_STORE;
+        const capName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
+        updateTurnBadge(`${SVGS.zap} CAPTURE!`, turn === 1 ? 'p1' : 'p2');
+        document.getElementById('turn-badge').classList.add('pulse'); setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
+        showToast(`${SVGS.zap} <span>${capName} menangkap biji!</span>`);
+
+        let capSeeds = seedEntities.filter(s => s.pit === oppIndex || s.pit === curr);
+        board[oppIndex] = 0; board[curr] = 0; updateCounts();
+
+        const promises = [];
+        capSeeds.forEach((seedObj, index) => {
+          seedObj.pit = storeIdx; board[storeIdx]++;
+          const targetPos = getPitTargetPosition(storeIdx, board[storeIdx] - 1);
+          promises.push(new Promise(async res => { await sleep(index * 30); await animateSeedCapture(seedObj, targetPos); res(); }));
+        });
+        await Promise.all(promises); updateCounts(); await sleep(300);
+      }
+    }
+  }
+
+  heldSeeds = 0; currentSowPit = -1; movingSeedsArray = [];
+  finishTurn(extraTurn);
+}
+
+async function finishTurn(extraTurn) {
   if (extraTurn) {
     const bonusName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
     updateTurnBadge(`${SVGS.target} BONUS TURN — ${bonusName}!`, turn === 1 ? 'p1' : 'p2');
-    document.getElementById('turn-badge').classList.add('pulse');
-    setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
+    document.getElementById('turn-badge').classList.add('pulse'); setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
     showToast(`${SVGS.target} <span>${bonusName} giliran bonus!</span>`);
     await sleep(900);
   }
@@ -1141,6 +1223,7 @@ function showToast(htmlMsg) {
 
 function startGame(mode) {
   gameMode = mode; createBoard(); turn = startingPlayer; gameActive = true; animating = false; pitElements = {};
+  heldSeeds = 0; currentSowPit = -1; movingSeedsArray = [];
 
   const sn1 = document.getElementById('score-name-p1'); const sn2 = document.getElementById('score-name-p2');
   if (sn1) sn1.textContent = (playerNames[1] || 'PLAYER 1').toUpperCase();
@@ -1199,7 +1282,13 @@ function initAbly(onReady) {
 function generateRoomCode() { return Math.floor(1000 + Math.random() * 9000).toString(); }
 function joinAblyRoom(code, asPlayer) {
   roomCode = code; myPlayer = asPlayer; channel = ably.channels.get(`mancala-${code}`);
-  channel.subscribe('move', msg => { if (gameMode !== 'online') return; if (msg.data.turn !== myPlayer) doMove(msg.data.from); });
+  channel.subscribe('move', msg => { 
+    if (gameMode !== 'online') return; 
+    if (msg.data.turn !== myPlayer) {
+      if (sowingMode === 'auto') doMoveAuto(msg.data.from);
+      else doMoveManual(msg.data.from);
+    } 
+  });
   channel.subscribe('rematch', msg => { startingPlayer = msg.data.startingPlayer || (startingPlayer === 1 ? 2 : 1); startGame('online'); showToast('Rematch dimulai!'); });
 }
 
@@ -1210,7 +1299,7 @@ function _doCreateRoom() {
     joinAblyRoom(code, 1); showScreen('waiting');
     channel.subscribe('join', msg => {
       playerNames[2] = msg.data.name || 'PLAYER 2';
-      channel.publish('ready', { hostName: myGlobalName, variant: gameVariant });
+      channel.publish('ready', { hostName: myGlobalName, variant: gameVariant, sowing: sowingMode });
       showToast('Lawan bergabung!'); startGame('online');
     });
     lbl.textContent = '';
@@ -1220,11 +1309,14 @@ function _doCreateRoom() {
 function _doJoinRoom(code) {
   const lbl = document.getElementById('lobby-status'); lbl.textContent = 'Menghubungkan...';
   initAbly(() => {
-    isHost = false; startingPlayer = 1; joinAblyRoom(code, 2);
+    isHost = false; startingPlayer = 1; 
+    playerNames[2] = myGlobalName || 'PLAYER 2'; // FIX SINKRON NAMA GUEST
+    joinAblyRoom(code, 2);
     channel.publish('join', { name: myGlobalName }); lbl.textContent = 'Menunggu konfirmasi host...';
     channel.subscribe('ready', msg => {
       playerNames[1] = msg.data.hostName || 'PLAYER 1';
       setVariant(msg.data.variant || 'mancala'); 
+      setSowingMode(msg.data.sowing || 'auto');
       showToast('Game dimulai!'); startGame('online');
     });
   });
