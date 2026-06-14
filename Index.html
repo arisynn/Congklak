@@ -1,0 +1,1687 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>MANCALA — Tournament Edition</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-top:     #f4f7fb;
+    --bg-bottom:  #e7edf6;
+    --surface:    #ffffff;
+    --surface-2:  #f6f8fb;
+    --line:       #e3e8f0;
+    --ink:        #1f2937;
+    --ink-soft:   #5b6675;
+    --ink-faint:  #9aa5b4;
+    --accent:     #2563eb;
+    --accent-soft: rgba(37,99,235,0.10);
+    --emerald:    #10b981;
+    --emerald-soft: rgba(16,185,129,0.12);
+    --gold:       #f59e0b;
+    --shadow:     rgba(30,41,59,0.10);
+    --pit-bg:     #eef2f7;
+    --p1-color:   #2563eb;
+    --p2-color:   #f43f5e;
+    --p1-seed:    #3B82F6;
+    --p2-seed:    #f43f5e;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+  .screen.hidden { display: none; }
+
+  /* ===== LOBBY ===== */
+  #lobby {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 55%),
+      linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  }
+  .lobby-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(32px, 7vw, 64px);
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lobby-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(10px, 1.5vw, 13px);
+    color: var(--ink-faint);
+    letter-spacing: 0.35em;
+    font-weight: 600;
+    margin-bottom: 40px;
+  }
+  .lobby-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 32px 36px;
+    width: min(440px, 90vw);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 20px 50px var(--shadow), 0 2px 8px rgba(30,41,59,0.04);
+  }
+  .btn {
+    padding: 14px 28px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(12px, 1.5vw, 14px);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(37,99,235,0.28);
+  }
+  .btn-primary:hover { background: #1d4fd1; box-shadow: 0 10px 24px rgba(37,99,235,0.34); transform: translateY(-1px); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--emerald), #0ea271);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(16,185,129,0.30);
+  }
+  .btn-gold:hover { background: linear-gradient(135deg, #14c98a, var(--emerald)); box-shadow: 0 10px 24px rgba(16,185,129,0.36); transform: translateY(-1px); }
+  .btn-outline {
+    background: var(--surface);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+  .btn-outline:hover { background: var(--surface-2); border-color: #cdd5e1; color: var(--ink); }
+
+  .input-field {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .input-field:focus { border-color: var(--accent); background: #ffffff; }
+  .input-field::placeholder { color: var(--ink-faint); }
+
+  .room-code-display {
+    background: var(--surface);
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 12px 32px var(--shadow);
+  }
+  .room-code-val {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  .status-dot.green { background: #22c55e; }
+  .status-dot.yellow { background: #f59e0b; }
+  @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink-faint);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+  }
+  .divider::before, .divider::after {
+    content:''; flex:1; height:1px;
+    background: var(--line);
+  }
+
+  /* ===== LANDSCAPE WARNING ===== */
+  #portrait-warn {
+    background: rgba(255,255,255,0.97);
+    z-index: 100;
+    gap: 16px;
+  }
+  #portrait-warn svg { color: var(--accent); width: 64px; height: 64px; animation: rotate-hint 2s ease-in-out infinite; }
+  @keyframes rotate-hint { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(90deg); } }
+  #portrait-warn h2 { font-family:'Poppins',sans-serif; color:var(--ink); font-size:20px; letter-spacing:0.06em; font-weight: 700; }
+  #portrait-warn p { color:var(--ink-soft); font-size:13px; }
+  .btn-landscape {
+    margin-top: 8px;
+    padding: 12px 28px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-landscape:hover { background: rgba(37,99,235,0.16); }
+  .btn-landscape:active { transform: scale(0.97); }
+
+  /* ===== GAME SCREEN ===== */
+  #game {
+    background:
+      radial-gradient(ellipse at 50% 50%, #ffffff 0%, var(--bg-bottom) 100%);
+  }
+
+  /* ===== HUD ===== */
+  .hud {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    z-index: 40;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    backdrop-filter: blur(6px);
+  }
+  .hud-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px; font-weight: 800;
+    color: var(--ink);
+    letter-spacing: 0.08em;
+  }
+  .turn-badge {
+    padding: 7px 20px;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.06em;
+    transition: all 0.4s;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .turn-badge.p1 { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(37,99,235,0.25); }
+  .turn-badge.p2 { background: rgba(244,63,94,0.10); color: var(--p2-color); border: 1px solid rgba(244,63,94,0.25); }
+  .turn-badge.neutral { background: var(--emerald-soft); color: var(--emerald); border: 1px solid rgba(16,185,129,0.25); }
+  .turn-badge.pulse { animation: turn-pulse 0.6s ease; }
+  @keyframes turn-pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.07); } 100% { transform: scale(1); } }
+
+  .btn-sm {
+    padding: 8px 18px; font-size: 11px; border-radius: 10px;
+    background: var(--surface); color: var(--ink-soft);
+    border: 1px solid var(--line); cursor:pointer;
+    font-family:'Inter',sans-serif; font-weight:700; letter-spacing:0.05em;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .btn-sm:hover { background: var(--surface-2); color: var(--ink); transform: translateY(-1px); }
+
+  /* ===== SCORE PANEL ===== */
+  .score-panel {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 44px;
+    display: flex; align-items: center; justify-content: center; gap: 28px;
+    background: linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    backdrop-filter: blur(6px);
+    z-index: 40;
+    pointer-events: none;
+  }
+  .score-item { display:flex; align-items:center; gap:8px; }
+  .score-label { font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; }
+  .score-label.p1 { color: var(--p1-color); }
+  .score-label.p2 { color: var(--p2-color); }
+  .score-num { font-family:'Poppins',sans-serif; font-size:20px; font-weight:800; color:var(--ink); transition: transform 0.25s ease; }
+  .score-num.bump { animation: score-bump 0.35s ease; }
+  @keyframes score-bump { 0% { transform: scale(1); } 50% { transform: scale(1.35); color: var(--emerald); } 100% { transform: scale(1); } }
+
+  /* ===== BOARD WRAPPER ===== */
+  #board-wrap {
+    position: fixed;
+    inset: 56px 0 44px 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ===== BOARD ===== */
+  .board {
+    position: relative;
+    display: flex; flex-direction: row;
+    align-items: center; justify-content: center;
+    gap: 0;
+    border-radius: 20px;
+    padding: 8px 10px;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.55) 100%);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow:
+      0 24px 60px rgba(30,41,59,0.12),
+      0 4px 16px rgba(30,41,59,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  /* ===== PITS ROW ===== */
+  .pits-col {
+    display: flex; flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .pits-row {
+    display: flex; flex-direction: row;
+    gap: 6px;
+    align-items: center; justify-content: space-around;
+    padding: 0 4px;
+  }
+
+  /* ===== PIT ===== */
+  .pit-wrap {
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .pit {
+    position: relative;
+    border-radius: 50%;
+    cursor: default;
+    overflow: visible;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .pit-inner {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 28%, rgba(255,255,255,0.9) 0%, transparent 45%),
+      radial-gradient(circle at 50% 60%, var(--pit-bg) 0%, #dde4ee 100%);
+    box-shadow:
+      inset 0 4px 12px rgba(30,41,59,0.10),
+      inset 0 -2px 4px rgba(255,255,255,0.7),
+      0 1px 2px rgba(30,41,59,0.05);
+    border: 1px solid rgba(255,255,255,0.8);
+    overflow: hidden;
+  }
+  .pit.clickable { cursor: pointer; }
+  .pit.clickable:hover { transform: scale(1.07); }
+  .pit.clickable:hover .pit-inner {
+    box-shadow:
+      inset 0 4px 12px rgba(30,41,59,0.10),
+      inset 0 -2px 4px rgba(255,255,255,0.7),
+      0 0 0 3px currentColor,
+      0 4px 12px rgba(30,41,59,0.12);
+  }
+  .pit.p1-clickable { color: var(--p1-color); }
+  .pit.p2-clickable { color: var(--p2-color); }
+  .pit.active-pit .pit-inner {
+    box-shadow:
+      inset 0 4px 12px rgba(30,41,59,0.10),
+      0 0 0 3px var(--emerald),
+      0 0 16px rgba(16,185,129,0.45);
+  }
+  .pit.active-pit { animation: pit-pop 0.35s ease; }
+  @keyframes pit-pop { 0% { transform: scale(1); } 50% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+  .pit-count {
+    font-family: 'Poppins', serif;
+    font-size: clamp(8px, 1vw, 11px);
+    font-weight: 700;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 0 6px;
+    min-width: 18px;
+    text-align: center;
+    border: 1px solid var(--line);
+    pointer-events: none;
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+
+  /* ===== STORE (MANCALA) ===== */
+  .store-wrap {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+  }
+  .store {
+    position: relative;
+    border-radius: 40px;
+    overflow: visible;
+    transition: box-shadow 0.3s;
+  }
+  .store-inner {
+    position: absolute; inset: 0;
+    border-radius: 40px;
+    background:
+      radial-gradient(ellipse at 40% 22%, rgba(255,255,255,0.9) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 60%, var(--pit-bg) 0%, #dde4ee 100%);
+    box-shadow:
+      inset 0 6px 18px rgba(30,41,59,0.10),
+      inset 0 -3px 6px rgba(255,255,255,0.7),
+      0 1px 4px rgba(30,41,59,0.05);
+    border: 1px solid rgba(255,255,255,0.8);
+    overflow: hidden;
+  }
+  .store.active-store .store-inner {
+    box-shadow:
+      inset 0 6px 18px rgba(30,41,59,0.10),
+      0 0 0 3px var(--emerald),
+      0 0 24px rgba(16,185,129,0.35);
+  }
+  .store-label {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(7px, 0.8vw, 9px);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-faint);
+  }
+  .store-count {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(12px, 1.5vw, 16px);
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  /* ===== SEEDS (rendered inside pits/stores) ===== */
+  .seed-canvas {
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* ===== FLYING SEED LAYER ===== */
+  #fly-layer {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+  .fly-seed {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  /* ===== PLAYER LABELS ===== */
+  .player-label {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(8px, 1vw, 10px);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .player-label.p1 { color: var(--p1-color); background: var(--accent-soft); border: 1px solid rgba(37,99,235,0.2); }
+  .player-label.p2 { color: var(--p2-color); background: rgba(244,63,94,0.10); border: 1px solid rgba(244,63,94,0.2); }
+
+  /* ===== ROW DIMMING ===== */
+  .row-dim { transition: opacity 0.4s; }
+  .row-dim.dimmed { opacity: 0.4; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(30,41,59,0.35);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 60;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 40px 48px;
+    text-align: center;
+    min-width: 300px;
+    box-shadow: 0 32px 80px rgba(30,41,59,0.25);
+    animation: modal-in 0.3s ease;
+  }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 28px; }
+  .modal-scores {
+    display: flex; gap: 32px; justify-content: center;
+    margin-bottom: 24px;
+  }
+  .modal-score-item { text-align: center; }
+  .modal-score-num { font-family:'Poppins',sans-serif; font-size:42px; font-weight:800; }
+  .modal-score-num.p1 { color: var(--p1-color); }
+  .modal-score-num.p2 { color: var(--p2-color); }
+  .modal-score-lbl { font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px; font-weight: 700; }
+
+  /* ===== CONNECTION STATUS ===== */
+  .conn-badge {
+    position: fixed; top: 56px; right: 12px;
+    font-size: 10px; padding: 4px 10px; border-radius: 999px;
+    background: var(--surface); border: 1px solid;
+    z-index: 25; pointer-events: none;
+    font-weight: 700; letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .conn-badge.online { color: var(--emerald); border-color: rgba(16,185,129,0.3); }
+  .conn-badge.offline { color: var(--p2-color); border-color: rgba(244,63,94,0.3); }
+  .conn-badge.waiting { color: var(--gold); border-color: rgba(245,158,11,0.3); }
+
+  /* ===== TOAST ===== */
+  #toast {
+    position: fixed; top: 68px; left: 50%; transform: translateX(-50%) translateY(-8px);
+    background: var(--ink); color: #ffffff;
+    padding: 9px 22px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+    z-index: 80; pointer-events: none;
+    opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(30,41,59,0.25);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ===== SEPARATOR ===== */
+  .board-separator {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--line), transparent);
+    margin: 2px 0;
+    border-radius: 1px;
+  }
+
+  /* ===== NAME INPUT MODAL ===== */
+  #name-modal {
+    position: fixed; inset: 0;
+    background: rgba(30,41,59,0.35);
+    backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 70;
+  }
+  #name-modal.hidden { display: none; }
+  .name-modal-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 40px 44px;
+    text-align: center;
+    min-width: min(400px, 88vw);
+    box-shadow: 0 32px 80px rgba(30,41,59,0.25);
+    display: flex; flex-direction: column; gap: 20px;
+    animation: modal-in 0.3s ease;
+  }
+  .name-modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px; font-weight: 800;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .name-modal-sub {
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    margin-top: -12px;
+    font-weight: 600;
+  }
+  .name-row {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .name-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .name-avatar.p1 { background: var(--accent-soft); color: var(--p1-color); border: 1px solid rgba(37,99,235,0.25); }
+  .name-avatar.p2 { background: rgba(244,63,94,0.10); color: var(--p2-color); border: 1px solid rgba(244,63,94,0.25); }
+
+  /* ===== FULLSCREEN BUTTON (lobby only) ===== */
+  .btn-fs-lobby {
+    position: fixed;
+    bottom: 16px; right: 16px;
+    z-index: 20;
+    padding: 9px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px var(--shadow);
+  }
+  .btn-fs-lobby:hover { background: var(--surface-2); color: var(--ink); }
+
+  /* ===== RULES MODAL ===== */
+  #rules-modal {
+    position: fixed; inset: 0;
+    background: rgba(30,41,59,0.4);
+    backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 90;
+    padding: 20px;
+  }
+  #rules-modal.hidden { display: none; }
+  .rules-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 36px 40px;
+    text-align: left;
+    max-width: min(480px, 92vw);
+    max-height: 86vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 80px rgba(30,41,59,0.25);
+    display: flex; flex-direction: column; gap: 14px;
+    animation: modal-in 0.3s ease;
+  }
+  .rules-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px; font-weight: 800;
+    color: var(--ink);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .rules-box p, .rules-box li {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .rules-box ol, .rules-box ul {
+    padding-left: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .rules-box strong { color: var(--ink); }
+  .rules-icon-row {
+    display: flex; justify-content: center; margin-bottom: 4px;
+  }
+  .rules-icon-row svg { width: 48px; height: 48px; color: var(--emerald); }
+</style>
+</head>
+<body>
+
+<!-- PORTRAIT WARNING -->
+<div id="portrait-warn" class="screen hidden">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+    <circle cx="12" cy="17" r="1" fill="currentColor"/>
+  </svg>
+  <h2>ROTATE TO LANDSCAPE</h2>
+  <p>Mancala harus dimainkan dalam mode landscape</p>
+  <button class="btn-landscape" id="btn-force-landscape">⛶ &nbsp; LANDSCAPE + FULLSCREEN</button>
+</div>
+
+<!-- FULLSCREEN BUTTON LOBBY -->
+<button class="btn-fs-lobby" id="btn-fs-global">⛶ FULLSCREEN</button>
+
+<!-- RULES MODAL -->
+<div id="rules-modal" class="hidden">
+  <div class="rules-box">
+    <div class="rules-icon-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M9 9a3 3 0 1 1 4 2.8c-.6.3-1 1-1 1.7v.5"/>
+        <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="rules-title">Cara Bermain Mancala</div>
+    <p>Setiap pemain memiliki <strong>6 lubang (pit)</strong> di sisi mereka dan satu <strong>gudang (store)</strong> besar di ujung kanan/kiri papan.</p>
+    <ol>
+      <li>Pada gilirannya, pemain memilih satu pit di sisinya yang berisi biji, lalu semua biji di pit tersebut akan dibagikan satu per satu ke pit-pit selanjutnya berlawanan arah jarum jam, termasuk ke gudang miliknya sendiri.</li>
+      <li>Biji <strong>tidak</strong> dimasukkan ke gudang lawan — lubang itu dilewati.</li>
+      <li>Jika biji terakhir jatuh di <strong>gudang sendiri</strong>, pemain mendapat <strong>giliran bonus</strong> (main lagi).</li>
+      <li>Jika biji terakhir jatuh di pit kosong milik sendiri, semua biji di pit tersebut dan di pit lawan tepat di seberangnya akan <strong>ditangkap (capture)</strong> dan masuk ke gudang sendiri.</li>
+      <li>Permainan berakhir saat semua pit di salah satu sisi kosong. Sisa biji di sisi lain masuk ke gudang masing-masing.</li>
+      <li>Pemain dengan biji terbanyak di gudangnya <strong>menang</strong>.</li>
+    </ol>
+    <button class="btn btn-gold" id="rules-confirm" style="width:100%;margin-top:8px">Mulai Bermain</button>
+  </div>
+</div>
+
+<!-- NAME INPUT MODAL -->
+<div id="name-modal" class="hidden">
+  <div class="name-modal-box">
+    <div class="name-modal-title">ENTER PLAYER NAMES</div>
+    <div class="name-modal-sub">NAMA AKAN TAMPIL SELAMA PERMAINAN</div>
+    <div class="name-row">
+      <div class="name-avatar p1">P1</div>
+      <input class="input-field" id="name-p1" placeholder="Player 1 name..." maxlength="12" style="flex:1"/>
+    </div>
+    <div class="name-row" id="name-row-p2">
+      <div class="name-avatar p2">P2</div>
+      <input class="input-field" id="name-p2" placeholder="Player 2 name..." maxlength="12" style="flex:1"/>
+    </div>
+    <button class="btn btn-gold" id="name-confirm" style="width:100%;margin-top:4px">▶ &nbsp; MULAI GAME</button>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="lobby" class="screen">
+  <div class="lobby-title">MANCALA</div>
+  <div class="lobby-sub">PREMIUM EDITION</div>
+  <div class="lobby-card">
+    <button class="btn btn-gold" id="btn-local">🎮 &nbsp; LOCAL 2 PLAYERS</button>
+    <div class="divider">OR ONLINE MULTIPLAYER</div>
+    <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
+    <div style="display:flex;gap:8px">
+      <input class="input-field" id="join-code" placeholder="Enter room code..." maxlength="6" style="flex:1;text-transform:uppercase;letter-spacing:0.2em;text-align:center"/>
+      <button class="btn btn-primary" id="btn-join" style="flex-shrink:0;padding:0 20px">JOIN</button>
+    </div>
+    <div id="lobby-status" style="font-size:12px;color:var(--ink-faint);text-align:center;min-height:18px;letter-spacing:0.05em;"></div>
+  </div>
+</div>
+
+<!-- WAITING ROOM -->
+<div id="waiting" class="screen hidden">
+  <div class="lobby-title" style="font-size:clamp(20px,4vw,40px)">WAITING FOR OPPONENT</div>
+  <div class="lobby-sub" style="margin-bottom:32px">SHARE THIS CODE</div>
+  <div class="room-code-display" style="width:min(400px,80vw);margin-bottom:32px">
+    <div style="font-size:12px;color:var(--ink-faint);letter-spacing:0.2em;margin-bottom:8px;font-weight:700">ROOM CODE</div>
+    <div class="room-code-val" id="room-code-display">------</div>
+    <button id="btn-copy" class="btn btn-outline" style="margin-top:16px;font-size:11px;padding:8px 20px">COPY CODE</button>
+  </div>
+  <div style="color:var(--ink-soft);font-size:13px">
+    <span class="status-dot yellow"></span>Waiting for second player...
+  </div>
+  <button class="btn btn-outline" id="btn-cancel" style="margin-top:24px;font-size:11px;padding:8px 20px">CANCEL</button>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen hidden">
+  <div class="hud">
+    <div class="hud-title">MANCALA</div>
+    <div class="turn-badge neutral" id="turn-badge">READY</div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-sm" id="btn-fs-game" title="Toggle Fullscreen">⛶</button>
+      <button class="btn-sm" id="btn-menu">MENU</button>
+    </div>
+  </div>
+
+  <div id="conn-badge" class="conn-badge hidden"></div>
+
+  <div id="board-wrap">
+    <!-- Board injected by JS -->
+  </div>
+
+  <div class="score-panel">
+    <div class="score-item">
+      <span class="score-label p1" id="score-name-p1">PLAYER 1</span>
+      <span class="score-num" id="score-p1">0</span>
+    </div>
+    <div style="width:1px;height:20px;background:var(--line)"></div>
+    <div class="score-item">
+      <span class="score-num" id="score-p2">0</span>
+      <span class="score-label p2" id="score-name-p2">PLAYER 2</span>
+    </div>
+  </div>
+</div>
+
+<!-- FLY LAYER -->
+<div id="fly-layer"></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- GAME OVER MODAL -->
+<div class="modal-overlay hidden" id="gameover-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="go-title">GAME OVER</div>
+    <div class="modal-sub" id="go-sub">Final Scores</div>
+    <div class="modal-scores">
+      <div class="modal-score-item">
+        <div class="modal-score-num p1" id="go-p1">0</div>
+        <div class="modal-score-lbl" id="go-name-p1">Player 1</div>
+      </div>
+      <div class="modal-score-item">
+        <div class="modal-score-num p2" id="go-p2">0</div>
+        <div class="modal-score-lbl" id="go-name-p2">Player 2</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-gold" id="go-rematch" style="font-size:13px;padding:12px 28px">REMATCH</button>
+      <button class="btn btn-outline" id="go-menu" style="font-size:13px;padding:12px 28px">MENU</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// CONSTANTS
+// ==========================================
+const INITIAL_SEEDS = 4;
+const ABLY_KEY = '4opURQ.FVPiqg:z5W8zQxWoBNlXmlAXvOv4Bz1bmn_ISnFucJGpjFijS8';
+
+// Board indices: 0-5 = P1 pits (left→right), 6 = P1 store, 7-12 = P2 pits (right→left from P2's view), 13 = P2 store
+const P1_PITS = [0,1,2,3,4,5];
+const P2_PITS = [12,11,10,9,8,7];
+const P1_STORE = 6;
+const P2_STORE = 13;
+
+// Seed visual params
+const SEED_COLORS_P1 = [
+  { base:'#2563EB', shine:'#BFDBFE', dark:'#1E3A8A' },
+  { base:'#0EA5E9', shine:'#BAE6FD', dark:'#075985' },
+  { base:'#6366F1', shine:'#C7D2FE', dark:'#3730A3' },
+];
+const SEED_COLORS_P2 = [
+  { base:'#F43F5E', shine:'#FECDD3', dark:'#9F1239' },
+  { base:'#F59E0B', shine:'#FDE68A', dark:'#92400E' },
+  { base:'#EC4899', shine:'#FBCFE8', dark:'#9D174D' },
+];
+
+// ==========================================
+// GAME STATE
+// ==========================================
+let board = [];
+let turn = 1;
+let gameActive = false;
+let animating = false;
+let gameMode = 'local';
+let myPlayer = 1;
+let roomCode = '';
+let ably = null;
+let channel = null;
+let isHost = false;
+
+let playerNames = { 1: 'PLAYER 1', 2: 'PLAYER 2' };
+let pendingGameMode = null;
+
+// ==========================================
+// BACKGROUND MUSIC (BGM) & SOUND FX
+// ==========================================
+let audioCtx = null;
+let bgmTracks = [];
+let currentTrackIdx = 0;
+let bgmAudio = new Audio();
+bgmAudio.volume = 0.25;
+
+async function initBGM() {
+  try {
+    // Fetch instrumental tracks from iTunes API
+    const res = await fetch('https://itunes.apple.com/search?term=instrumental+lofi+chill&entity=song&limit=15');
+    const data = await res.json();
+    bgmTracks = data.results.filter(t => t.previewUrl).map(t => t.previewUrl).slice(0, 5);
+  } catch(e) {
+    console.log("BGM fetch failed", e);
+  }
+}
+
+function playBGM() {
+  if (bgmTracks.length === 0) return;
+  bgmAudio.src = bgmTracks[currentTrackIdx];
+  bgmAudio.play().catch(()=>{});
+  bgmAudio.onended = () => {
+    currentTrackIdx = (currentTrackIdx + 1) % bgmTracks.length;
+    playBGM();
+  };
+}
+
+document.addEventListener('click', () => {
+  if (bgmAudio.paused && bgmTracks.length > 0) {
+    playBGM();
+  }
+}, { once: true, capture: true });
+
+initBGM();
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq, duration, type = 'sine', startGain = 0.12, delay = 0) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    const t0 = ctx.currentTime + delay;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(startGain, t0 + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + duration + 0.02);
+  } catch(e) {}
+}
+
+function sfxSeed() {
+  const f = 520 + Math.random() * 140;
+  playTone(f, 0.09, 'triangle', 0.07);
+}
+
+function sfxCapture() {
+  playTone(659, 0.18, 'triangle', 0.10);
+  playTone(880, 0.22, 'triangle', 0.09, 0.07);
+  playTone(1175, 0.26, 'triangle', 0.08, 0.14);
+}
+
+function sfxBonus() {
+  playTone(523, 0.14, 'sine', 0.10);
+  playTone(784, 0.22, 'sine', 0.10, 0.10);
+}
+
+function sfxWin() {
+  const notes = [523, 659, 784, 1046, 1318];
+  notes.forEach((f, i) => playTone(f, 0.3, 'triangle', 0.10, i * 0.12));
+}
+
+// ==========================================
+// RULES MODAL
+// ==========================================
+try {
+  if (!localStorage.getItem('mancala_rules_seen')) {
+    document.getElementById('rules-modal').classList.remove('hidden');
+  }
+} catch(e) {
+  document.getElementById('rules-modal').classList.remove('hidden');
+}
+document.getElementById('rules-confirm').onclick = () => {
+  document.getElementById('rules-modal').classList.add('hidden');
+  try { localStorage.setItem('mancala_rules_seen', '1'); } catch(e) {}
+};
+
+let seedLayouts = {};
+let pitElements = {};
+let pitRects = {};
+
+// ==========================================
+// INIT BOARD
+// ==========================================
+function createBoard() {
+  board = Array(14).fill(0);
+  for (let i = 0; i <= 5; i++) board[i] = INITIAL_SEEDS;
+  for (let i = 7; i <= 12; i++) board[i] = INITIAL_SEEDS;
+}
+
+function generateSeedLayout(capacity = 48) {
+  const layouts = [];
+  const goldenAngle = 2.399963;
+  for (let i = 0; i < capacity; i++) {
+    const r = 0.36 * Math.sqrt(i / capacity);
+    const theta = i * goldenAngle;
+    layouts.push({ cx: 0.5 + r * Math.cos(theta), cy: 0.5 + r * Math.sin(theta) });
+  }
+  return layouts;
+}
+
+// ==========================================
+// DOM BUILDING
+// ==========================================
+function buildBoard() {
+  const wrap = document.getElementById('board-wrap');
+  wrap.innerHTML = '';
+
+  const board_el = document.createElement('div');
+  board_el.className = 'board';
+  board_el.id = 'the-board';
+
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const availH = vh - 100; // HUD + score panel leeway
+  const availW = vw * 0.94;
+
+  const GAP = 6;
+  const STORE_RATIO = 1.2;
+  const STORE_H_RATIO = 2.0;
+  const BOARD_PAD_X = 12; 
+  const BOARD_PAD_Y = 12;
+  const STORE_MARGIN = 8;
+
+  const pitSizeW = Math.floor((availW - 2*BOARD_PAD_X - 2*STORE_MARGIN - 5*GAP) / (6 + 2*STORE_RATIO));
+  const pitSizeH = Math.floor((availH - 2*BOARD_PAD_Y - 32) / 2); // 32 for middle separator & labels
+  const pitSize = Math.max(36, Math.min(pitSizeW, pitSizeH));
+
+  const storeW = Math.floor(pitSize * STORE_RATIO);
+  const storeH = Math.min(Math.floor(pitSize * STORE_H_RATIO), availH - 40);
+
+  for (let i = 0; i < 14; i++) {
+    seedLayouts[i] = generateSeedLayout(48);
+  }
+
+  // P2 STORE
+  const storeP2Wrap = makeStore(13, 2, storeW, storeH);
+
+  // PITS COLUMN
+  const pitsCol = document.createElement('div');
+  pitsCol.className = 'pits-col';
+  pitsCol.style.cssText = 'margin: 0 10px; flex: 1;';
+
+  const p2lbl = document.createElement('div');
+  p2lbl.style.cssText = 'display:flex;justify-content:center;margin-bottom:2px;';
+  const p2span = document.createElement('span');
+  p2span.className = 'player-label p2'; p2span.id = 'p2-label';
+  p2span.textContent = (playerNames[2] || 'PLAYER 2').toUpperCase() + ' ▲';
+  p2lbl.appendChild(p2span); pitsCol.appendChild(p2lbl);
+
+  const rowP2 = document.createElement('div');
+  rowP2.className = 'pits-row row-dim'; rowP2.id = 'row-p2';
+  rowP2.style.cssText = `display:flex;flex-direction:row;gap:${GAP}px;align-items:center;justify-content:center;padding:0 4px;`;
+  P2_PITS.forEach(idx => rowP2.appendChild(makePit(idx, pitSize)));
+  pitsCol.appendChild(rowP2);
+
+  const sep = document.createElement('div'); sep.className = 'board-separator'; pitsCol.appendChild(sep);
+
+  const rowP1 = document.createElement('div');
+  rowP1.className = 'pits-row row-dim'; rowP1.id = 'row-p1';
+  rowP1.style.cssText = `display:flex;flex-direction:row;gap:${GAP}px;align-items:center;justify-content:center;padding:0 4px;`;
+  P1_PITS.forEach(idx => rowP1.appendChild(makePit(idx, pitSize)));
+  pitsCol.appendChild(rowP1);
+
+  const p1lbl = document.createElement('div');
+  p1lbl.style.cssText = 'display:flex;justify-content:center;margin-top:2px;';
+  const p1span = document.createElement('span');
+  p1span.className = 'player-label p1'; p1span.id = 'p1-label';
+  p1span.textContent = '▼ ' + (playerNames[1] || 'PLAYER 1').toUpperCase();
+  p1lbl.appendChild(p1span); pitsCol.appendChild(p1lbl);
+
+  // P1 STORE
+  const storeP1Wrap = makeStore(6, 1, storeW, storeH);
+
+  board_el.appendChild(storeP2Wrap);
+  board_el.appendChild(pitsCol);
+  board_el.appendChild(storeP1Wrap);
+
+  wrap.appendChild(board_el);
+
+  requestAnimationFrame(() => {
+    cachePitRects();
+    renderAllSeeds();
+  });
+}
+
+function makePit(index, size) {
+  const wrap = document.createElement('div');
+  wrap.className = 'pit-wrap';
+
+  const pit = document.createElement('div');
+  pit.className = 'pit';
+  pit.id = `pit-${index}`;
+  pit.style.width = pit.style.height = size + 'px';
+  pit.dataset.index = index;
+  pit.addEventListener('click', () => onPitClick(index));
+
+  const inner = document.createElement('div');
+  inner.className = 'pit-inner';
+  const canvas = document.createElement('div');
+  canvas.className = 'seed-canvas';
+  canvas.id = `seeds-${index}`;
+  inner.appendChild(canvas);
+  pit.appendChild(inner);
+
+  const count = document.createElement('div');
+  count.className = 'pit-count';
+  count.id = `count-${index}`;
+  count.textContent = '0';
+
+  wrap.appendChild(pit);
+  wrap.appendChild(count);
+  pitElements[index] = pit;
+  return wrap;
+}
+
+function makeStore(index, player, w, h) {
+  const wrap = document.createElement('div');
+  wrap.className = 'store-wrap';
+
+  const lbl = document.createElement('div');
+  lbl.className = 'store-label';
+  const pName = (playerNames[player] || `P${player}`).toUpperCase();
+  lbl.textContent = pName.length > 6 ? pName.slice(0,6) + '…' : pName;
+
+  const cnt = document.createElement('div');
+  cnt.className = 'store-count';
+  cnt.id = `count-${index}`;
+  cnt.textContent = '0';
+
+  const store = document.createElement('div');
+  store.className = 'store';
+  store.id = `pit-${index}`;
+  store.style.width = w + 'px';
+  store.style.height = h + 'px';
+  store.dataset.index = index;
+
+  const inner = document.createElement('div');
+  inner.className = 'store-inner';
+  const canvas = document.createElement('div');
+  canvas.className = 'seed-canvas';
+  canvas.id = `seeds-${index}`;
+  inner.appendChild(canvas);
+  store.appendChild(inner);
+
+  pitElements[index] = store;
+
+  if (player === 1) {
+    wrap.appendChild(lbl);
+    wrap.appendChild(store);
+    wrap.appendChild(cnt);
+  } else {
+    wrap.appendChild(cnt);
+    wrap.appendChild(store);
+    wrap.appendChild(lbl);
+  }
+  return wrap;
+}
+
+function cachePitRects() {
+  for (let i = 0; i < 14; i++) {
+    const el = pitElements[i];
+    if (el) {
+      const r = el.getBoundingClientRect();
+      pitRects[i] = { x: r.left + r.width/2, y: r.top + r.height/2, w: r.width, h: r.height };
+    }
+  }
+}
+
+function renderAllSeeds() {
+  for (let i = 0; i < 14; i++) renderSeeds(i);
+  updateCounts();
+}
+
+function renderSeeds(index) {
+  const container = document.getElementById(`seeds-${index}`);
+  if (!container) return;
+  container.innerHTML = '';
+
+  const count = board[index];
+  if (count === 0) return;
+
+  const el = pitElements[index];
+  if (!el) return;
+  const w = el.offsetWidth || 60;
+  const h = el.offsetHeight || 60;
+
+  const isP1Side = P1_PITS.includes(index) || index === P1_STORE;
+  const colors = isP1Side ? SEED_COLORS_P1 : SEED_COLORS_P2;
+
+  const maxVisible = 24;
+  const displayCount = Math.min(count, maxVisible);
+  const seedR = Math.max(4, Math.min(10, (Math.min(w,h) * 0.13) * (1 - displayCount/60)));
+
+  const layouts = seedLayouts[index] || generateSeedLayout(48);
+
+  for (let i = 0; i < displayCount; i++) {
+    const layout = layouts[i % layouts.length];
+    const c = colors[i % colors.length];
+
+    const seed = document.createElement('div');
+    seed.className = 'fly-seed'; 
+    const cx = layout.cx * w - seedR;
+    const cy = layout.cy * h - seedR;
+
+    seed.style.cssText = `
+      left:${cx}px; top:${cy}px;
+      width:${seedR*2}px; height:${seedR*2}px;
+      background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
+      box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5);
+    `;
+    container.appendChild(seed);
+  }
+
+  if (count > maxVisible) {
+    const badge = document.createElement('div');
+    badge.style.cssText = `position:absolute;bottom:4px;right:4px;font-size:8px;color:rgba(255,255,255,0.7);font-weight:700;background:rgba(0,0,0,0.5);border-radius:999px;padding:1px 4px;`;
+    badge.textContent = `+${count - maxVisible}`;
+    container.appendChild(badge);
+  }
+}
+
+function updateCounts() {
+  for (let i = 0; i < 14; i++) {
+    const el = document.getElementById(`count-${i}`);
+    if (el) el.textContent = board[i];
+  }
+  const s1 = document.getElementById('score-p1');
+  const s2 = document.getElementById('score-p2');
+  if (s1 && s1.textContent !== String(board[P1_STORE])) {
+    s1.textContent = board[P1_STORE];
+    s1.classList.remove('bump'); void s1.offsetWidth; s1.classList.add('bump');
+  }
+  if (s2 && s2.textContent !== String(board[P2_STORE])) {
+    s2.textContent = board[P2_STORE];
+    s2.classList.remove('bump'); void s2.offsetWidth; s2.classList.add('bump');
+  }
+}
+
+function updateClickability() {
+  if (!gameActive || animating) {
+    for (let i = 0; i < 14; i++) {
+      const el = pitElements[i];
+      if (el) el.classList.remove('clickable', 'p1-clickable', 'p2-clickable');
+    }
+    return;
+  }
+  P1_PITS.forEach(i => {
+    const el = pitElements[i];
+    if (!el) return;
+    el.classList.remove('clickable','p1-clickable','p2-clickable');
+    if (turn === 1 && board[i] > 0 && canIPlay()) el.classList.add('clickable','p1-clickable');
+  });
+  P2_PITS.forEach(i => {
+    const el = pitElements[i];
+    if (!el) return;
+    el.classList.remove('clickable','p1-clickable','p2-clickable');
+    if (turn === 2 && board[i] > 0 && canIPlay()) el.classList.add('clickable','p2-clickable');
+  });
+
+  const rowP1 = document.getElementById('row-p1');
+  const rowP2 = document.getElementById('row-p2');
+  if (rowP1 && rowP2) {
+    rowP1.classList.toggle('dimmed', turn !== 1);
+    rowP2.classList.toggle('dimmed', turn !== 2);
+  }
+}
+
+function canIPlay() {
+  if (gameMode === 'local') return true;
+  return myPlayer === turn;
+}
+
+function updateTurnBadge(msg, cls = 'neutral') {
+  const badge = document.getElementById('turn-badge');
+  if (!badge) return;
+  badge.textContent = msg;
+  badge.className = `turn-badge ${cls}`;
+}
+
+function onPitClick(index) {
+  if (!gameActive || animating) return;
+  const isP1Pit = P1_PITS.includes(index);
+  const isP2Pit = P2_PITS.includes(index);
+  if (!isP1Pit && !isP2Pit) return;
+  if (turn === 1 && !isP1Pit) return;
+  if (turn === 2 && !isP2Pit) return;
+  if (board[index] === 0) return;
+  if (!canIPlay()) { showToast('Wait for your turn!'); return; }
+
+  if (gameMode === 'online') {
+    channel.publish('move', { from: index, board: JSON.parse(JSON.stringify(board)), turn });
+  }
+
+  doMove(index);
+}
+
+async function doMove(startIndex) {
+  if (animating) return;
+  animating = true;
+  updateClickability();
+  cachePitRects(); 
+
+  const seeds = board[startIndex];
+  board[startIndex] = 0;
+  renderSeeds(startIndex);
+  updateCounts();
+
+  const activePitEl = pitElements[startIndex];
+  if (activePitEl) activePitEl.classList.add('active-pit');
+
+  updateTurnBadge('SOWING...', turn === 1 ? 'p1' : 'p2');
+
+  let curr = startIndex;
+  for (let s = 0; s < seeds; s++) {
+    const prev = curr;
+    curr = (curr + 1) % 14;
+    if (turn === 1 && curr === P2_STORE) curr = 0;
+    if (turn === 2 && curr === P1_STORE) curr = 7;
+
+    board[curr]++;
+
+    const fromRect = pitRects[prev] || pitRects[startIndex];
+    const toRect = pitRects[curr];
+    if (fromRect && toRect) await flyingSeed(fromRect, toRect, turn);
+    else await sleep(120);
+
+    renderSeeds(curr);
+    updateCounts();
+    sfxSeed();
+
+    if (s < seeds - 1) await sleep(40);
+  }
+
+  if (activePitEl) activePitEl.classList.remove('active-pit');
+
+  const lastEl = pitElements[curr];
+  if (lastEl) lastEl.classList.add('active-pit');
+  await sleep(300);
+  if (lastEl) lastEl.classList.remove('active-pit');
+
+  let extraTurn = false;
+
+  if ((turn === 1 && curr === P1_STORE) || (turn === 2 && curr === P2_STORE)) {
+    extraTurn = true;
+    const bonusName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
+    updateTurnBadge(`🎯 BONUS TURN — ${bonusName}!`, turn === 1 ? 'p1' : 'p2');
+    document.getElementById('turn-badge').classList.add('pulse');
+    setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
+    showToast(`🎯 ${bonusName} gets a bonus turn!`);
+    sfxBonus();
+    await sleep(900);
+  }
+
+  if (!extraTurn) {
+    const isP1LastOnOwn = turn === 1 && P1_PITS.includes(curr) && board[curr] === 1;
+    const isP2LastOnOwn = turn === 2 && P2_PITS.includes(curr) && board[curr] === 1;
+    if (isP1LastOnOwn || isP2LastOnOwn) {
+      const oppIndex = 12 - curr;
+      if (board[oppIndex] > 0) {
+        const storeIdx = turn === 1 ? P1_STORE : P2_STORE;
+        const capName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
+        updateTurnBadge(`🔥 CAPTURE!`, turn === 1 ? 'p1' : 'p2');
+        document.getElementById('turn-badge').classList.add('pulse');
+        setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
+        showToast(`🔥 ${capName} captures!`);
+        sfxCapture();
+
+        const storeRect = pitRects[storeIdx];
+        const oppRect = pitRects[oppIndex];
+        const ownRect = pitRects[curr];
+
+        const captured = board[oppIndex] + board[curr];
+        board[oppIndex] = 0;
+        board[curr] = 0;
+        renderSeeds(oppIndex); renderSeeds(curr);
+
+        const promises = [];
+        const batchCount = Math.min(captured, 6);
+        for (let k = 0; k < batchCount; k++) {
+          promises.push((async () => {
+            await sleep(k * 60);
+            if (oppRect && storeRect) await flyingSeed(oppRect, storeRect, turn, true);
+            if (ownRect && storeRect) await flyingSeed(ownRect, storeRect, turn, true);
+          })());
+        }
+        await Promise.all(promises);
+
+        board[storeIdx] += captured;
+        renderSeeds(storeIdx);
+        updateCounts();
+        await sleep(500);
+      }
+    }
+  }
+
+  if (checkGameOver()) return;
+
+  if (!extraTurn) {
+    turn = turn === 1 ? 2 : 1;
+  }
+
+  animating = false;
+  const tName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
+  updateTurnBadge(`${tName}'S TURN`, turn === 1 ? 'p1' : 'p2');
+  if (!extraTurn) {
+    const badge = document.getElementById('turn-badge');
+    badge?.classList.add('pulse');
+    setTimeout(() => badge?.classList.remove('pulse'), 600);
+  }
+  updateClickability();
+}
+
+function flyingSeed(from, to, player, isCapture = false) {
+  return new Promise(resolve => {
+    const layer = document.getElementById('fly-layer');
+    const colors = player === 1 ? SEED_COLORS_P1 : SEED_COLORS_P2;
+    const c = colors[Math.floor(Math.random() * colors.length)];
+    const size = 14;
+
+    const el = document.createElement('div');
+    el.className = 'fly-seed';
+    el.style.cssText = `
+      left:${from.x - size/2}px; top:${from.y - size/2}px;
+      width:${size}px; height:${size}px;
+      background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
+      box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.5), 0 3px 8px rgba(0,0,0,0.6);
+      position:absolute; border-radius:50%;
+    `;
+    layer.appendChild(el);
+
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const dur = Math.min(500, Math.max(180, dist * 1.2));
+
+    const arcHeight = isCapture ? -(dist * 0.6 + 40) : -(dist * 0.35 + 20);
+    const midX = (from.x + to.x) / 2;
+    const midY = (from.y + to.y) / 2 + arcHeight;
+
+    const kf = [
+      { offset: 0,   left: `${from.x - size/2}px`, top: `${from.y - size/2}px`, transform: 'scale(1.3)', opacity: '1' },
+      { offset: 0.4, left: `${midX - size/2}px`,   top: `${midY - size/2}px`,   transform: 'scale(1.5)', opacity: '1' },
+      { offset: 0.8, left: `${to.x - size/2}px`,   top: `${to.y - size/2}px`,   transform: 'scale(1.1)', opacity: '1' },
+      { offset: 1,   left: `${to.x - size/2}px`,   top: `${to.y - size/2}px`,   transform: 'scale(0.4)', opacity: '0' },
+    ];
+
+    el.animate(kf, { duration: dur, easing: 'ease-in', fill: 'forwards' }).onfinish = () => {
+      el.remove();
+      resolve();
+    };
+  });
+}
+
+function checkGameOver() {
+  const p1Empty = P1_PITS.every(i => board[i] === 0);
+  const p2Empty = P2_PITS.every(i => board[i] === 0);
+
+  if (!p1Empty && !p2Empty) return false;
+
+  P1_PITS.forEach(i => { board[P1_STORE] += board[i]; board[i] = 0; });
+  P2_PITS.forEach(i => { board[P2_STORE] += board[i]; board[i] = 0; });
+
+  renderAllSeeds();
+  updateCounts();
+  gameActive = false;
+  animating = false;
+
+  setTimeout(() => showGameOver(), 600);
+  return true;
+}
+
+function showGameOver() {
+  const s1 = board[P1_STORE], s2 = board[P2_STORE];
+  const n1 = playerNames[1] || 'Player 1';
+  const n2 = playerNames[2] || 'Player 2';
+  let title = s1 === s2 ? 'DRAW!' : (s1 > s2 ? `${n1.toUpperCase()} WINS!` : `${n2.toUpperCase()} WINS!`);
+  document.getElementById('go-title').textContent = title;
+  document.getElementById('go-sub').textContent = 'Final Scores';
+  document.getElementById('go-p1').textContent = s1;
+  document.getElementById('go-p2').textContent = s2;
+  const gn1 = document.getElementById('go-name-p1');
+  const gn2 = document.getElementById('go-name-p2');
+  if (gn1) gn1.textContent = n1;
+  if (gn2) gn2.textContent = n2;
+  document.getElementById('gameover-modal').classList.remove('hidden');
+  sfxWin();
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function startGame(mode) {
+  gameMode = mode;
+  createBoard();
+  turn = 1;
+  gameActive = true;
+  animating = false;
+  pitElements = {};
+
+  const sn1 = document.getElementById('score-name-p1');
+  const sn2 = document.getElementById('score-name-p2');
+  if (sn1) sn1.textContent = (playerNames[1] || 'PLAYER 1').toUpperCase();
+  if (sn2) sn2.textContent = (playerNames[2] || 'PLAYER 2').toUpperCase();
+
+  showScreen('game');
+  buildBoard();
+  const n1 = (playerNames[1] || 'Player 1').toUpperCase();
+  updateTurnBadge(`${n1}'S TURN`, 'p1');
+
+  document.getElementById('gameover-modal').classList.add('hidden');
+
+  if (gameMode === 'online') {
+    const badge = document.getElementById('conn-badge');
+    badge.className = 'conn-badge online';
+    badge.textContent = `● ONLINE · ROOM ${roomCode}`;
+    badge.classList.remove('hidden');
+  }
+
+  setTimeout(updateClickability, 300);
+}
+
+function showScreen(id) {
+  ['lobby','waiting','game'].forEach(s => {
+    document.getElementById(s)?.classList.toggle('hidden', s !== id);
+  });
+  const fsBtn = document.getElementById('btn-fs-global');
+  if (fsBtn) fsBtn.style.display = (id === 'game') ? 'none' : 'block';
+}
+
+function checkOrientation() {
+  const isPortrait = window.innerHeight > window.innerWidth;
+  document.getElementById('portrait-warn').classList.toggle('hidden', !isPortrait);
+}
+window.addEventListener('resize', () => { checkOrientation(); cachePitRects(); });
+checkOrientation();
+
+function initAbly(onReady) {
+  ably = new Ably.Realtime({ key: ABLY_KEY });
+  ably.connection.on('connected', onReady);
+  ably.connection.on('disconnected', () => showToast('⚠️ Connection lost'));
+}
+
+function generateRoomCode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+function joinAblyRoom(code, asPlayer) {
+  roomCode = code;
+  myPlayer = asPlayer;
+  channel = ably.channels.get(`mancala-${code}`);
+
+  channel.subscribe('move', msg => {
+    if (gameMode !== 'online') return;
+    if (msg.data.turn !== myPlayer) doMove(msg.data.from);
+  });
+
+  channel.subscribe('rematch', () => {
+    startGame('online');
+    showToast('Rematch started!');
+  });
+
+  channel.subscribe('opponent-joined', () => {
+    if (isHost) {
+      showToast('Opponent joined!');
+      startGame('online');
+    }
+  });
+
+  channel.subscribe('ready', msg => {
+    if (!isHost) {
+      myPlayer = 2;
+      startGame('online');
+      showToast('Game started!');
+    }
+  });
+}
+
+function showNameModal(mode) {
+  pendingGameMode = mode;
+  document.getElementById('name-row-p2').style.display = (mode === 'local') ? 'flex' : 'none';
+  document.getElementById('name-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('name-p1').focus(), 100);
+}
+
+document.getElementById('name-confirm').onclick = () => {
+  const n1 = document.getElementById('name-p1').value.trim();
+  const n2 = document.getElementById('name-p2').value.trim();
+  playerNames[1] = n1 || 'Player 1';
+  playerNames[2] = (pendingGameMode === 'local') ? (n2 || 'Player 2') : 'Player 2';
+  document.getElementById('name-modal').classList.add('hidden');
+
+  if (pendingGameMode === 'local') {
+    myPlayer = 1; gameMode = 'local';
+    startGame('local');
+  } else if (pendingGameMode === 'create') {
+    _doCreateRoom();
+  } else if (pendingGameMode === 'join') {
+    _doJoinRoom();
+  }
+};
+
+document.getElementById('name-p1').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const p2row = document.getElementById('name-row-p2');
+    if (p2row.style.display !== 'none') document.getElementById('name-p2').focus();
+    else document.getElementById('name-confirm').click();
+  }
+});
+document.getElementById('name-p2').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('name-confirm').click();
+});
+
+document.getElementById('btn-local').onclick = () => showNameModal('local');
+document.getElementById('btn-create').onclick = () => showNameModal('create');
+
+function _doCreateRoom() {
+  const lbl = document.getElementById('lobby-status');
+  lbl.textContent = 'Connecting...';
+  initAbly(() => {
+    isHost = true;
+    const code = generateRoomCode();
+    document.getElementById('room-code-display').textContent = code;
+    joinAblyRoom(code, 1);
+    showScreen('waiting');
+    channel.subscribe('join', msg => {
+      channel.publish('ready', { host: 1 });
+      channel.publish('opponent-joined', {});
+    });
+    lbl.textContent = '';
+  });
+}
+
+document.getElementById('btn-join').onclick = () => {
+  const code = document.getElementById('join-code').value.trim().toUpperCase();
+  if (code.length < 4) { showLobbyStatus('Enter a valid room code'); return; }
+  showNameModal('join');
+};
+
+function _doJoinRoom() {
+  const code = document.getElementById('join-code').value.trim().toUpperCase();
+  const lbl = document.getElementById('lobby-status');
+  lbl.textContent = 'Connecting...';
+  initAbly(() => {
+    isHost = false;
+    joinAblyRoom(code, 2);
+    channel.publish('join', { player: 2 });
+    lbl.textContent = 'Waiting for host...';
+  });
+}
+
+document.getElementById('btn-copy').onclick = () => {
+  const code = document.getElementById('room-code-display').textContent;
+  navigator.clipboard.writeText(code).then(() => showToast('Code copied!'));
+};
+
+document.getElementById('btn-cancel').onclick = () => {
+  if (ably) { ably.close(); ably = null; }
+  showScreen('lobby');
+};
+
+document.getElementById('btn-menu').onclick = () => {
+  gameActive = false;
+  if (ably) { ably.close(); ably = null; }
+  showScreen('lobby');
+};
+
+document.getElementById('go-menu').onclick = () => {
+  document.getElementById('gameover-modal').classList.add('hidden');
+  gameActive = false;
+  if (ably) { ably.close(); ably = null; }
+  showScreen('lobby');
+};
+
+document.getElementById('go-rematch').onclick = () => {
+  document.getElementById('gameover-modal').classList.add('hidden');
+  if (gameMode === 'online' && channel) {
+    channel.publish('rematch', {});
+  }
+  startGame(gameMode);
+};
+
+function showLobbyStatus(msg) {
+  const lbl = document.getElementById('lobby-status');
+  lbl.textContent = msg;
+  setTimeout(() => lbl.textContent = '', 3000);
+}
+
+function tryFullscreen() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
+function tryLandscape() {
+  try {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(() => {});
+    }
+  } catch(e) {}
+  tryFullscreen();
+  try { localStorage.setItem('mancala_fs', '1'); } catch(e) {}
+}
+
+function updateFsButton() {
+  const inFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  const btn1 = document.getElementById('btn-fs-global');
+  if (btn1) btn1.textContent = inFs ? '✕ EXIT FS' : '⛶ FULLSCREEN';
+  const btn2 = document.getElementById('btn-fs-game');
+  if (btn2) btn2.textContent = inFs ? '✕' : '⛶';
+}
+document.addEventListener('fullscreenchange', updateFsButton);
+document.addEventListener('webkitfullscreenchange', updateFsButton);
+
+const toggleFs = () => {
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  } else {
+    tryLandscape();
+  }
+};
+document.getElementById('btn-fs-global').onclick = toggleFs;
+document.getElementById('btn-fs-game').onclick = toggleFs;
+document.getElementById('btn-force-landscape').onclick = () => tryLandscape();
+
+try {
+  if (localStorage.getItem('mancala_fs') === '1') {
+    document.addEventListener('click', function autoFs() {
+      if (!document.fullscreenElement) tryLandscape();
+      document.removeEventListener('click', autoFs);
+    }, { once: true, capture: true });
+  }
+} catch(e) {}
+
+</script>
+</body>
+</html>
