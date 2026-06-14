@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>CONGKLAK & MANCALA — Tournament Edition</title>
+<title>CONGKLAK & MANCALA — Physics Edition</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
 <style>
@@ -33,13 +33,10 @@
   }
 
   html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
+    width: 100%; height: 100%; overflow: hidden;
     background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-    font-family: 'Inter', sans-serif;
-    color: var(--ink);
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
+    font-family: 'Inter', sans-serif; color: var(--ink);
+    user-select: none; -webkit-tap-highlight-color: transparent;
   }
 
   /* ===== SCREENS ===== */
@@ -48,87 +45,58 @@
 
   /* ===== LOBBY ===== */
   #lobby {
-    background:
-      radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 55%),
-      linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    background: radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 55%), linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
   }
   .lobby-title {
     font-family: 'Poppins', sans-serif;
-    font-size: clamp(24px, 8vh, 48px);
-    font-weight: 800;
-    color: var(--ink);
-    letter-spacing: 0.06em;
-    margin-bottom: 0px;
+    font-size: clamp(22px, 6vh, 42px);
+    font-weight: 800; color: var(--ink);
+    letter-spacing: 0.04em; margin-bottom: 2px;
     background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    text-align: center; white-space: nowrap;
   }
   .lobby-sub {
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(10px, 2.5vh, 13px);
-    color: var(--ink-faint);
-    letter-spacing: 0.35em;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-family: 'Inter', sans-serif; font-size: clamp(9px, 2vh, 12px);
+    color: var(--ink-faint); letter-spacing: 0.35em; font-weight: 600; margin-bottom: 8px;
   }
 
   .lobby-welcome {
     display: inline-flex; align-items: center; gap: 8px;
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
     color: var(--ink-soft); background: var(--surface);
     padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line);
-    margin-bottom: 24px; cursor: pointer; transition: all 0.2s;
+    margin-bottom: 12px; cursor: pointer; transition: all 0.2s;
     box-shadow: 0 4px 12px rgba(30,41,59,0.03);
   }
-  .lobby-welcome:hover {
-    background: var(--surface-2); color: var(--accent); border-color: #cdd5e1;
-    transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37,99,235,0.08);
-  }
+  .lobby-welcome:hover { background: var(--surface-2); color: var(--accent); border-color: #cdd5e1; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37,99,235,0.08); }
   .lobby-welcome #lobby-display-name { font-weight: 700; color: var(--ink); }
 
   .lobby-card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 24px;
-    padding: 24px;
-    width: min(440px, 90vw);
-    max-height: 80vh;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    padding: 16px 24px; width: min(440px, 90vw);
+    display: flex; flex-direction: column; gap: 10px;
     box-shadow: 0 20px 50px var(--shadow), 0 2px 8px rgba(30,41,59,0.04);
   }
 
   .variant-selector {
     display: flex; gap: 8px; background: var(--surface-2);
-    padding: 6px; border-radius: 16px; border: 1px solid var(--line);
+    padding: 6px; border-radius: 14px; border: 1px solid var(--line);
   }
   .variant-btn {
-    flex: 1; padding: 10px 0; text-align: center; font-size: 12px; font-weight: 700;
-    color: var(--ink-soft); border-radius: 12px; cursor: pointer; transition: all 0.2s;
+    flex: 1; padding: 8px 0; text-align: center; font-size: 11px; font-weight: 700;
+    color: var(--ink-soft); border-radius: 10px; cursor: pointer; transition: all 0.2s;
     display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-  .variant-btn svg { width: 16px; height: 16px; opacity: 0.6; transition: opacity 0.2s; }
-  .variant-btn.active {
-    background: #ffffff; color: var(--accent); box-shadow: 0 4px 12px var(--shadow);
-  }
+  .variant-btn svg { width: 14px; height: 14px; opacity: 0.6; transition: opacity 0.2s; }
+  .variant-btn.active { background: #ffffff; color: var(--accent); box-shadow: 0 4px 12px var(--shadow); }
   .variant-btn.active svg { opacity: 1; stroke: var(--accent); }
 
   .btn {
-    padding: 12px 24px;
-    border-radius: 14px;
-    border: none;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(12px, 1.5vw, 14px);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
-    position: relative;
-    overflow: hidden;
+    padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: clamp(11px, 1.2vw, 13px);
+    font-weight: 700; letter-spacing: 0.04em; transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+    position: relative; overflow: hidden;
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary { background: var(--accent); color: #ffffff; box-shadow: 0 8px 20px rgba(37,99,235,0.28); }
@@ -138,11 +106,11 @@
   .btn-outline { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line); }
   .btn-outline:hover { background: var(--surface-2); border-color: #cdd5e1; color: var(--ink); }
 
-  .btn-icon { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-icon { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
   .input-field {
-    width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line);
-    background: var(--surface-2); color: var(--ink); font-size: 14px;
+    width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface-2); color: var(--ink); font-size: 13px;
     font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s;
   }
   .input-field:focus { border-color: var(--accent); background: #ffffff; }
@@ -154,15 +122,11 @@
   }
   .room-code-val { font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); letter-spacing: 0.3em; }
 
-  .status-dot {
-    width: 8px; height: 8px; border-radius: 50%; display: inline-block;
-    margin-right: 6px; animation: pulse-dot 1.5s ease-in-out infinite;
-  }
-  .status-dot.green { background: #22c55e; }
-  .status-dot.yellow { background: #f59e0b; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse-dot 1.5s ease-in-out infinite; }
+  .status-dot.green { background: #22c55e; } .status-dot.yellow { background: #f59e0b; }
   @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
-  .divider { display: flex; align-items: center; gap: 12px; color: var(--ink-faint); font-size: 11px; font-weight: 600; letter-spacing: 0.2em; }
+  .divider { display: flex; align-items: center; gap: 12px; color: var(--ink-faint); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; }
   .divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--line); }
 
   /* ===== LANDSCAPE WARNING ===== */
@@ -171,23 +135,18 @@
   @keyframes rotate-hint { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(90deg); } }
   #portrait-warn h2 { font-family:'Poppins',sans-serif; color:var(--ink); font-size:20px; letter-spacing:0.06em; font-weight: 700; }
   #portrait-warn p { color:var(--ink-soft); font-size:13px; }
-  .btn-landscape {
-    margin-top: 8px; padding: 12px 28px; border-radius: 14px; border: 1px solid var(--line);
-    background: var(--accent-soft); color: var(--accent); font-family: 'Inter', sans-serif;
-    font-size: 13px; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; transition: all 0.2s;
-  }
 
   /* ===== GAME SCREEN & BOARD ===== */
   #game { background: radial-gradient(ellipse at 50% 50%, #ffffff 0%, var(--bg-bottom) 100%); }
   .hud {
-    position: fixed; top: 0; left: 0; right: 0; height: 56px;
+    position: fixed; top: 0; left: 0; right: 0; height: 50px;
     display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
     z-index: 40; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0)); backdrop-filter: blur(6px);
   }
-  .hud-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: 0.08em; }
+  .hud-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: 0.08em; }
   .turn-badge {
-    padding: 7px 20px; border-radius: 999px; font-family: 'Inter', sans-serif;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.06em; transition: all 0.4s;
+    padding: 6px 16px; border-radius: 999px; font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em; transition: all 0.4s;
     box-shadow: 0 2px 8px var(--shadow); display: flex; align-items: center; justify-content: center; gap: 6px;
   }
   .turn-badge svg { width: 14px; height: 14px; }
@@ -198,7 +157,7 @@
   @keyframes turn-pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.07); } 100% { transform: scale(1); } }
 
   .btn-sm {
-    padding: 8px 18px; font-size: 11px; border-radius: 10px; background: var(--surface);
+    padding: 8px 16px; font-size: 10px; border-radius: 8px; background: var(--surface);
     color: var(--ink-soft); border: 1px solid var(--line); cursor:pointer;
     font-family:'Inter',sans-serif; font-weight:700; letter-spacing:0.05em; transition: all 0.2s; box-shadow: 0 2px 8px var(--shadow);
   }
@@ -218,7 +177,7 @@
   .score-num.bump { animation: score-bump 0.35s ease; }
   @keyframes score-bump { 0% { transform: scale(1); } 50% { transform: scale(1.35); color: var(--emerald); } 100% { transform: scale(1); } }
 
-  #board-wrap { position: fixed; inset: 56px 0 44px 0; display: flex; align-items: center; justify-content: center; }
+  #board-wrap { position: fixed; inset: 50px 0 44px 0; display: flex; align-items: center; justify-content: center; }
   .board {
     position: relative; display: flex; flex-direction: row; align-items: center; justify-content: center;
     gap: 0; border-radius: 20px; padding: 8px 10px;
@@ -226,7 +185,7 @@
     backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.6);
     box-shadow: 0 24px 60px rgba(30,41,59,0.12), 0 4px 16px rgba(30,41,59,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
   }
-  .pits-col { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .pits-col { display: flex; flex-direction: column; gap: 4px; flex: 1; margin: 0 10px; }
   .pits-row { display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: space-around; padding: 0 4px; }
   .pit-wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .pit { position: relative; border-radius: 50%; cursor: default; overflow: visible; transition: transform 0.15s ease, box-shadow 0.15s ease; }
@@ -243,8 +202,7 @@
   .pit.p2-clickable { color: var(--p2-color); }
   .pit.active-pit .pit-inner { box-shadow: inset 0 4px 12px rgba(30,41,59,0.10), 0 0 0 3px var(--emerald), 0 0 16px rgba(16,185,129,0.45); }
   .pit.active-pit { animation: pit-pop 0.35s ease; }
-  @keyframes pit-pop { 0% { transform: scale(1); } 50% { transform: scale(1.12); } 100% { transform: scale(1); } }
-
+  
   .pit-count {
     font-family: 'Poppins', serif; font-size: clamp(8px, 1vw, 11px); font-weight: 700;
     color: var(--ink-soft); background: var(--surface); border-radius: 999px;
@@ -264,35 +222,36 @@
   .store-label { font-family: 'Inter', sans-serif; font-size: clamp(7px, 0.8vw, 9px); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: var(--ink-faint); }
   .store-count { font-family: 'Poppins', sans-serif; font-size: clamp(12px, 1.5vw, 16px); font-weight: 800; color: var(--ink); }
 
-  .seed-canvas { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; overflow: hidden; }
-  #fly-layer { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
-  .fly-seed { position: absolute; border-radius: 50%; pointer-events: none; will-change: transform, opacity; }
-
   .player-label { font-family: 'Inter', sans-serif; font-size: clamp(8px, 1vw, 10px); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
   .player-label.p1 { color: var(--p1-color); background: var(--accent-soft); border: 1px solid rgba(37,99,235,0.2); }
   .player-label.p2 { color: var(--p2-color); background: rgba(244,63,94,0.10); border: 1px solid rgba(244,63,94,0.2); }
+  .row-dim { transition: opacity 0.4s; } .row-dim.dimmed { opacity: 0.4; }
 
-  .row-dim { transition: opacity 0.4s; }
-  .row-dim.dimmed { opacity: 0.4; }
+  /* ===== PHYSICAL SEEDS LAYER ===== */
+  #seed-layer { position: fixed; inset: 0; pointer-events: none; z-index: 45; }
+  .physical-seed {
+    position: absolute; top: 0; left: 0;
+    width: 14px; height: 14px; border-radius: 50%;
+    pointer-events: none; will-change: transform;
+  }
 
   /* ===== MODALS ===== */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(30,41,59,0.35); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 60; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(30,41,59,0.35); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
   .modal-overlay.hidden { display: none; }
   .modal-box {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 24px;
-    padding: 24px 32px; text-align: center; min-width: 300px; max-height: 85vh; overflow-y: auto;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    padding: 20px 24px; text-align: center; min-width: 300px; max-height: 85vh; overflow-y: auto;
     box-shadow: 0 32px 80px rgba(30,41,59,0.25); animation: modal-in 0.3s ease;
   }
   @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
   
   .name-modal-box {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 24px;
-    padding: 24px 32px; text-align: center; min-width: min(380px, 88vw);
-    box-shadow: 0 32px 80px rgba(30,41,59,0.25); display: flex; flex-direction: column; gap: 16px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    padding: 20px 24px; text-align: center; min-width: min(380px, 88vw);
+    box-shadow: 0 32px 80px rgba(30,41,59,0.25); display: flex; flex-direction: column; gap: 12px;
     animation: modal-in 0.3s ease;
   }
-  .name-modal-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: 0.02em; }
-  .name-modal-sub { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.08em; margin-top: -8px; font-weight: 600; }
+  .name-modal-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: 0.02em; }
   .name-row { display: flex; align-items: center; gap: 12px; }
   .name-avatar {
     width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -301,17 +260,27 @@
   .name-avatar.p1 { background: var(--accent-soft); color: var(--p1-color); border: 1px solid rgba(37,99,235,0.25); }
   .name-avatar.p2 { background: rgba(244,63,94,0.10); color: var(--p2-color); border: 1px solid rgba(244,63,94,0.25); }
 
-  /* ===== CONNECTION STATUS & TOAST ===== */
+  /* ===== RULES MODAL ===== */
+  .rules-box {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    padding: 20px 24px; text-align: left; width: min(480px, 92vw); max-height: 90vh;
+    box-shadow: 0 32px 80px rgba(30,41,59,0.25); display: flex; flex-direction: column; gap: 8px;
+    animation: modal-in 0.3s ease;
+  }
+  .rules-content { overflow-y: auto; padding-right: 8px; margin-bottom: 8px; }
+  .rules-content p, .rules-content li { font-size: 12px; line-height: 1.5; color: var(--ink-soft); }
+  .rules-content ol { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+  /* ===== TOAST & BADGE ===== */
   .conn-badge {
     position: fixed; top: 56px; right: 12px; font-size: 10px; padding: 4px 10px; border-radius: 999px;
     background: var(--surface); border: 1px solid; z-index: 25; pointer-events: none; font-weight: 700; letter-spacing: 0.05em;
     box-shadow: 0 2px 8px var(--shadow);
   }
   .conn-badge.online { color: var(--emerald); border-color: rgba(16,185,129,0.3); }
-  .conn-badge.offline { color: var(--p2-color); border-color: rgba(244,63,94,0.3); }
   
   #toast {
-    position: fixed; top: 68px; left: 50%; transform: translateX(-50%) translateY(-8px);
+    position: fixed; top: 60px; left: 50%; transform: translateX(-50%) translateY(-8px);
     background: var(--ink); color: #ffffff; padding: 9px 22px; border-radius: 999px;
     font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
     z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
@@ -320,62 +289,91 @@
   #toast svg { width: 14px; height: 14px; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .board-separator { height: 1px; background: linear-gradient(to right, transparent, var(--line), transparent); margin: 2px 0; border-radius: 1px; }
-
-  .btn-fs-lobby {
-    position: fixed; bottom: 16px; right: 16px; z-index: 20; padding: 9px 18px; border-radius: 12px;
+  .btn-fs-global {
+    position: fixed; bottom: 16px; right: 16px; z-index: 20; padding: 8px 16px; border-radius: 12px;
     border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
     font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
     cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px var(--shadow); display: inline-flex; align-items: center; gap: 6px;
   }
-  .btn-fs-lobby:hover { background: var(--surface-2); color: var(--ink); }
+  .btn-fs-global:hover { background: var(--surface-2); color: var(--ink); }
+
+  #btn-rules-lobby {
+    position: fixed; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--line); color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: 0 4px 14px var(--shadow); z-index: 20; transition: all 0.2s;
+  }
+  #btn-rules-lobby:hover { background: var(--surface-2); color: var(--accent); transform: scale(1.05); }
+
 </style>
 </head>
 <body>
 
 <!-- PORTRAIT WARNING -->
 <div id="portrait-warn" class="screen hidden">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-    <path d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-    <circle cx="12" cy="17" r="1" fill="currentColor"/>
-  </svg>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
   <h2>PUTAR KE LANDSCAPE</h2>
-  <p>Game ini harus dimainkan dalam mode landscape</p>
+  <p>Game ini dirancang untuk mode landscape</p>
   <button class="btn-landscape btn-icon" id="btn-force-landscape">
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
     LANDSCAPE & FULLSCREEN
   </button>
 </div>
 
-<!-- FULLSCREEN BUTTON LOBBY -->
-<button class="btn-fs-lobby" id="btn-fs-global">
+<!-- LOBBY RULES BUTTON -->
+<button id="btn-rules-lobby" title="Cara Bermain">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+</button>
+
+<button class="btn-fs-global" id="btn-fs-global">
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
   FULLSCREEN
 </button>
 
+<!-- RULES MODAL -->
+<div id="rules-modal" class="modal-overlay hidden" style="z-index: 90;">
+  <div class="rules-box">
+    <div style="text-align: center;">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 4px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <div style="font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800; color: var(--ink);">Panduan Bermain</div>
+    </div>
+    <div class="rules-content">
+      <p>Setiap pemain memiliki deretan lubang di sisinya dan satu lumbung (store) besar di ujung kanan.</p>
+      <ol>
+        <li>Pada gilirannya, pilih satu lubang di sisi kamu untuk mengambil semua bijinya, lalu tabur berlawanan arah jarum jam.</li>
+        <li>Biji <strong>tidak</strong> dimasukkan ke lumbung lawan.</li>
+        <li>Jika biji terakhir jatuh di <strong>lumbung sendiri</strong>, kamu dapat <strong>giliran bonus</strong>.</li>
+        <li><strong>Mode Mancala:</strong> Jika biji terakhir jatuh di lubang yang ada isinya, giliran selesai.</li>
+        <li><strong>Mode Congklak:</strong> Jika biji terakhir jatuh di lubang yang ada isinya, ambil semua biji di lubang itu dan lanjutkan putaran (Relay).</li>
+        <li>Jika biji terakhir jatuh di lubang kosong milik sendiri, kamu <strong>menangkap</strong> semua biji lawan di seberangnya.</li>
+        <li>Permainan berakhir saat semua lubang di salah satu sisi kosong. Pemain dengan lumbung terbanyak menang.</li>
+      </ol>
+    </div>
+    <button class="btn btn-gold" id="rules-confirm" style="width:100%;">Saya Mengerti</button>
+  </div>
+</div>
+
 <!-- GLOBAL NAME MODAL (P1) -->
 <div id="global-name-modal" class="modal-overlay hidden" style="z-index: 85;">
   <div class="name-modal-box">
-    <div class="name-modal-title">SELAMAT DATANG</div>
-    <div class="name-modal-sub">MASUKKAN NAMA KAMU</div>
+    <div class="name-modal-title">MASUKKAN NAMA KAMU</div>
     <div class="name-row">
       <div class="name-avatar p1">P1</div>
       <input class="input-field" id="input-global-name" placeholder="Nama kamu..." maxlength="12" style="flex:1"/>
     </div>
-    <button class="btn btn-gold" id="btn-save-global-name" style="width:100%;margin-top:4px">SIMPAN & LANJUT</button>
+    <button class="btn btn-gold" id="btn-save-global-name" style="width:100%;">SIMPAN</button>
   </div>
 </div>
 
 <!-- LOCAL P2 NAME MODAL -->
 <div id="p2-name-modal" class="modal-overlay hidden" style="z-index: 80;">
   <div class="name-modal-box">
-    <div class="name-modal-title">LOCAL MULTIPLAYER</div>
-    <div class="name-modal-sub">NAMA PLAYER 2</div>
+    <div class="name-modal-title">NAMA PLAYER 2 (LOKAL)</div>
     <div class="name-row">
       <div class="name-avatar p2">P2</div>
       <input class="input-field" id="input-p2-name" placeholder="Nama Player 2..." maxlength="12" style="flex:1"/>
     </div>
-    <button class="btn btn-gold btn-icon" id="btn-start-local" style="width:100%;margin-top:4px">
+    <button class="btn btn-gold btn-icon" id="btn-start-local" style="width:100%;">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
       MULAI GAME
     </button>
@@ -384,12 +382,11 @@
 
 <!-- LOBBY -->
 <div id="lobby" class="screen">
-  <div class="lobby-title">CONGKLAK &<br>MANCALA</div>
-  <div class="lobby-sub">PREMIUM EDITION</div>
+  <div class="lobby-title">CONGKLAK & MANCALA</div>
   
   <div class="lobby-welcome" id="btn-change-name" title="Ubah Nama">
     <span>Hi, <span id="lobby-display-name">—</span></span>
-    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
   </div>
 
   <div class="lobby-card">
@@ -405,35 +402,32 @@
     </div>
 
     <button class="btn btn-gold btn-icon" id="btn-local">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>
       LOCAL 2 PLAYERS
     </button>
     <div class="divider">OR ONLINE MULTIPLAYER</div>
     <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
-    <div style="display:flex;gap:8px">
+    <div style="display:flex;gap:6px">
       <input class="input-field" id="join-code" type="number" placeholder="4 Digit Code..." maxlength="4" style="flex:1;text-transform:uppercase;letter-spacing:0.2em;text-align:center" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"/>
-      <button class="btn btn-primary" id="btn-join" style="flex-shrink:0;padding:0 20px">JOIN</button>
+      <button class="btn btn-primary" id="btn-join" style="flex-shrink:0;padding:0 16px">JOIN</button>
     </div>
-    <div id="lobby-status" style="font-size:12px;color:var(--ink-faint);text-align:center;min-height:18px;letter-spacing:0.05em;"></div>
+    <div id="lobby-status" style="font-size:11px;color:var(--ink-faint);text-align:center;min-height:16px;letter-spacing:0.05em;"></div>
   </div>
 </div>
 
 <!-- WAITING ROOM -->
 <div id="waiting" class="screen hidden">
-  <div class="lobby-title" style="font-size:clamp(20px,6vh,40px)">WAITING FOR OPPONENT</div>
-  <div class="lobby-sub" style="margin-bottom:16px">SHARE THIS CODE</div>
-  <div class="room-code-display" style="width:min(400px,80vw);margin-bottom:24px">
-    <div style="font-size:12px;color:var(--ink-faint);letter-spacing:0.2em;margin-bottom:8px;font-weight:700">ROOM CODE</div>
+  <div class="lobby-title" style="font-size:clamp(18px,5vh,32px)">WAITING FOR OPPONENT</div>
+  <div class="room-code-display" style="width:min(350px,80vw);margin: 20px 0;">
+    <div style="font-size:11px;color:var(--ink-faint);letter-spacing:0.2em;margin-bottom:8px;font-weight:700">ROOM CODE</div>
     <div class="room-code-val" id="room-code-display">----</div>
     <button id="btn-copy" class="btn btn-outline btn-icon" style="margin-top:16px;font-size:11px;padding:8px 20px">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
       COPY CODE
     </button>
   </div>
-  <div style="color:var(--ink-soft);font-size:13px">
-    <span class="status-dot yellow"></span>Waiting for second player...
-  </div>
-  <button class="btn btn-outline" id="btn-cancel" style="margin-top:16px;font-size:11px;padding:8px 20px">CANCEL</button>
+  <div style="color:var(--ink-soft);font-size:12px"><span class="status-dot yellow"></span>Menunggu pemain kedua...</div>
+  <button class="btn btn-outline" id="btn-cancel" style="margin-top:20px;font-size:11px;padding:8px 20px">CANCEL</button>
 </div>
 
 <!-- GAME -->
@@ -468,8 +462,8 @@
   </div>
 </div>
 
-<!-- FLY LAYER -->
-<div id="fly-layer"></div>
+<!-- PHYSICAL SEEDS LAYER -->
+<div id="seed-layer"></div>
 
 <!-- TOAST -->
 <div id="toast"></div>
@@ -477,21 +471,21 @@
 <!-- GAME OVER MODAL -->
 <div class="modal-overlay hidden" id="gameover-modal">
   <div class="modal-box">
-    <div style="font-family:'Poppins',sans-serif; font-size:28px; font-weight:800; color:var(--ink); margin-bottom:8px;" id="go-title">GAME OVER</div>
-    <div style="color:var(--ink-soft); font-size:14px; margin-bottom:28px;" id="go-sub">Final Scores</div>
-    <div style="display:flex; gap:32px; justify-content:center; margin-bottom:24px;">
+    <div style="font-family:'Poppins',sans-serif; font-size:24px; font-weight:800; color:var(--ink); margin-bottom:4px;" id="go-title">GAME OVER</div>
+    <div style="color:var(--ink-soft); font-size:12px; margin-bottom:20px;" id="go-sub">Skor Akhir</div>
+    <div style="display:flex; gap:32px; justify-content:center; margin-bottom:20px;">
       <div style="text-align:center;">
-        <div style="font-family:'Poppins',sans-serif; font-size:42px; font-weight:800; color:var(--p1-color);" id="go-p1">0</div>
-        <div style="font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px; font-weight:700;" id="go-name-p1">Player 1</div>
+        <div style="font-family:'Poppins',sans-serif; font-size:36px; font-weight:800; color:var(--p1-color);" id="go-p1">0</div>
+        <div style="font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px; font-weight:700;" id="go-name-p1">Player 1</div>
       </div>
       <div style="text-align:center;">
-        <div style="font-family:'Poppins',sans-serif; font-size:42px; font-weight:800; color:var(--p2-color);" id="go-p2">0</div>
-        <div style="font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px; font-weight:700;" id="go-name-p2">Player 2</div>
+        <div style="font-family:'Poppins',sans-serif; font-size:36px; font-weight:800; color:var(--p2-color);" id="go-p2">0</div>
+        <div style="font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px; font-weight:700;" id="go-name-p2">Player 2</div>
       </div>
     </div>
     <div style="display:flex;gap:12px;justify-content:center">
-      <button class="btn btn-gold" id="go-rematch" style="font-size:13px;padding:12px 28px">REMATCH</button>
-      <button class="btn btn-outline" id="go-menu" style="font-size:13px;padding:12px 28px">MENU</button>
+      <button class="btn btn-gold" id="go-rematch" style="font-size:12px;padding:10px 24px">REMATCH</button>
+      <button class="btn btn-outline" id="go-menu" style="font-size:12px;padding:10px 24px">MENU</button>
     </div>
   </div>
 </div>
@@ -502,8 +496,7 @@
 // ==========================================
 const ABLY_KEY = '4opURQ.FVPiqg:z5W8zQxWoBNlXmlAXvOv4Bz1bmn_ISnFucJGpjFijS8';
 
-// State Variables (Berubah tergantung varian game)
-let gameVariant = 'mancala'; // 'mancala' atau 'congklak'
+let gameVariant = 'mancala';
 let INITIAL_SEEDS = 4;
 let TOTAL_PITS = 14;
 let P1_STORE = 6;
@@ -555,21 +548,16 @@ function setVariant(variant) {
 
 function setupGameRules() {
   if (gameVariant === 'congklak') {
-    INITIAL_SEEDS = 7; TOTAL_PITS = 16;
-    P1_STORE = 7; P2_STORE = 15;
+    INITIAL_SEEDS = 7; TOTAL_PITS = 16; P1_STORE = 7; P2_STORE = 15;
     P1_PITS = [0,1,2,3,4,5,6]; P2_PITS = [8,9,10,11,12,13,14];
     document.getElementById('in-game-title').textContent = 'CONGKLAK';
   } else {
-    INITIAL_SEEDS = 4; TOTAL_PITS = 14;
-    P1_STORE = 6; P2_STORE = 13;
+    INITIAL_SEEDS = 4; TOTAL_PITS = 14; P1_STORE = 6; P2_STORE = 13;
     P1_PITS = [0,1,2,3,4,5]; P2_PITS = [7,8,9,10,11,12];
     document.getElementById('in-game-title').textContent = 'MANCALA';
   }
 }
 
-// ==========================================
-// INITIAL APP FLOW (Name)
-// ==========================================
 function updateLobbyNameDisplay() {
   const el = document.getElementById('lobby-display-name');
   if (el) el.textContent = myGlobalName || 'Player 1';
@@ -580,9 +568,8 @@ window.addEventListener('DOMContentLoaded', () => {
     myGlobalName = localStorage.getItem('mancala_p1_name') || '';
     if (myGlobalName) playerNames[1] = myGlobalName;
   } catch(e) {}
-
   updateLobbyNameDisplay();
-  setupGameRules(); // init variables
+  setupGameRules(); 
 
   if (!myGlobalName) {
     document.getElementById('global-name-modal').classList.remove('hidden');
@@ -610,9 +597,13 @@ document.getElementById('input-global-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btn-save-global-name').click();
 });
 
-// ==========================================
-// BUTTONS & MODES LOGIC
-// ==========================================
+document.getElementById('btn-rules-lobby').onclick = () => {
+  document.getElementById('rules-modal').classList.remove('hidden');
+};
+document.getElementById('rules-confirm').onclick = () => {
+  document.getElementById('rules-modal').classList.add('hidden');
+};
+
 document.getElementById('btn-local').onclick = () => {
   document.getElementById('p2-name-modal').classList.remove('hidden');
   setTimeout(() => document.getElementById('input-p2-name').focus(), 100);
@@ -622,67 +613,118 @@ document.getElementById('btn-start-local').onclick = () => {
   const p2Name = document.getElementById('input-p2-name').value.trim();
   playerNames[2] = p2Name || 'Player 2';
   document.getElementById('p2-name-modal').classList.add('hidden');
-  myPlayer = 1; 
-  gameMode = 'local';
-  startingPlayer = 1; 
+  myPlayer = 1; gameMode = 'local'; startingPlayer = 1; 
   startGame('local');
 };
-
 document.getElementById('input-p2-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btn-start-local').click();
 });
 
-document.getElementById('btn-create').onclick = () => {
-  _doCreateRoom();
-};
-
+document.getElementById('btn-create').onclick = () => _doCreateRoom();
 document.getElementById('btn-join').onclick = () => {
   const code = document.getElementById('join-code').value.trim();
-  if (code.length !== 4) { showLobbyStatus('Masukkan 4 digit kode room'); return; }
+  if (code.length !== 4) { showLobbyStatus('Masukkan 4 digit kode'); return; }
   _doJoinRoom(code);
 };
 
 // ==========================================
-// BACKGROUND MUSIC
+// PHYSICAL SEEDS SYSTEM
 // ==========================================
-let bgmTracks = [];
-let currentTrackIdx = 0;
-let bgmAudio = new Audio();
-bgmAudio.volume = 0.25;
-
-async function initBGM() {
-  try {
-    const res = await fetch('https://itunes.apple.com/search?term=lofi+chill+beats+instrumental&entity=song&limit=50');
-    const data = await res.json();
-    let tracks = data.results.filter(t => t.previewUrl).map(t => t.previewUrl);
-    
-    for (let i = tracks.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
-    }
-    bgmTracks = tracks;
-  } catch(e) { }
-}
-
-function playBGM() {
-  if (bgmTracks.length === 0) return;
-  bgmAudio.src = bgmTracks[currentTrackIdx];
-  bgmAudio.play().catch(()=>{});
-  bgmAudio.onended = () => {
-    currentTrackIdx = (currentTrackIdx + 1) % bgmTracks.length;
-    playBGM();
-  };
-}
-
-document.addEventListener('click', () => {
-  if (bgmAudio.paused && bgmTracks.length > 0) playBGM();
-}, { once: true, capture: true });
-
-initBGM();
-
+let seedEntities = [];
 let seedLayouts = {};
 let pitElements = {};
 let pitRects = {};
+const SEED_SIZE = 14;
+
+function generateSeedLayout(capacity = 100) {
+  const layouts = []; const goldenAngle = 2.399963;
+  for (let i = 0; i < capacity; i++) {
+    const r = 0.36 * Math.sqrt(i / capacity);
+    const theta = i * goldenAngle;
+    layouts.push({ cx: 0.5 + r * Math.cos(theta), cy: 0.5 + r * Math.sin(theta) });
+  }
+  return layouts;
+}
+
+function initPhysicalSeeds() {
+  const layer = document.getElementById('seed-layer');
+  layer.innerHTML = '';
+  seedEntities = [];
+
+  // Pilihan warna dicampur aduk merata
+  let allColors = [];
+  for(let i=0; i<50; i++) allColors.push(SEED_COLORS_P1[i%3], SEED_COLORS_P2[i%3]);
+  allColors.sort(() => Math.random() - 0.5);
+
+  let cIdx = 0;
+  for (let i = 0; i < TOTAL_PITS; i++) {
+    const count = board[i];
+    for (let j = 0; j < count; j++) {
+      const el = document.createElement('div');
+      el.className = 'physical-seed';
+      const c = allColors[cIdx++ % allColors.length];
+      el.style.cssText = `
+        background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
+        box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5);
+      `;
+      layer.appendChild(el);
+      seedEntities.push({ id: seedEntities.length, el, pit: i, x: 0, y: 0 });
+    }
+  }
+}
+
+function getPitTargetPosition(pitIndex, indexInPit) {
+  const rect = pitRects[pitIndex];
+  if (!rect) return { x:0, y:0 };
+  const layout = seedLayouts[pitIndex][indexInPit % 100];
+  return {
+    x: rect.x - rect.w/2 + layout.cx * rect.w - (SEED_SIZE/2),
+    y: rect.y - rect.h/2 + layout.cy * rect.h - (SEED_SIZE/2)
+  };
+}
+
+function snapAllSeeds() {
+  cachePitRects();
+  if(Object.keys(pitRects).length === 0) return;
+  let pitIndexCounts = Array(TOTAL_PITS).fill(0);
+  seedEntities.forEach(seedObj => {
+    let currentIdx = pitIndexCounts[seedObj.pit]++;
+    const target = getPitTargetPosition(seedObj.pit, currentIdx);
+    seedObj.x = target.x;
+    seedObj.y = target.y;
+    seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px)`;
+  });
+}
+
+function animateSeedPhysics(seedObj, targetPos, isFast = false, isCapture = false) {
+  return new Promise(resolve => {
+    const startX = seedObj.x;
+    const startY = seedObj.y;
+    const dx = targetPos.x - startX;
+    const dy = targetPos.y - startY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    
+    const baseDur = Math.min(600, Math.max(250, dist * 1.1));
+    const dur = isFast ? baseDur * 0.55 : baseDur;
+    
+    const arcHeight = isCapture ? -(dist * 0.4 + 25) : -(dist * 0.25 + 15);
+    const midX = startX + dx/2;
+    const midY = startY + dy/2 + arcHeight;
+
+    anime({
+      targets: seedObj,
+      x: [ { value: targetPos.x, duration: dur, easing: 'linear' } ],
+      y: [
+        { value: midY, duration: dur * 0.4, easing: 'easeOutSine' },
+        { value: targetPos.y, duration: dur * 0.6, easing: 'easeOutBounce' }
+      ],
+      update: function() {
+        seedObj.el.style.transform = `translate(${seedObj.x}px, ${seedObj.y}px)`;
+      },
+      complete: resolve
+    });
+  });
+}
 
 // ==========================================
 // INIT BOARD
@@ -693,20 +735,6 @@ function createBoard() {
   P2_PITS.forEach(i => board[i] = INITIAL_SEEDS);
 }
 
-function generateSeedLayout(capacity = 48) {
-  const layouts = [];
-  const goldenAngle = 2.399963;
-  for (let i = 0; i < capacity; i++) {
-    const r = 0.36 * Math.sqrt(i / capacity);
-    const theta = i * goldenAngle;
-    layouts.push({ cx: 0.5 + r * Math.cos(theta), cy: 0.5 + r * Math.sin(theta) });
-  }
-  return layouts;
-}
-
-// ==========================================
-// DOM BUILDING (PERSPECTIVE AWARE)
-// ==========================================
 function buildBoard() {
   const wrap = document.getElementById('board-wrap');
   wrap.innerHTML = '';
@@ -715,144 +743,95 @@ function buildBoard() {
   board_el.className = 'board';
 
   const vw = window.innerWidth, vh = window.innerHeight;
-  const availH = vh - 100;
+  const availH = vh - 90;
   const availW = vw * 0.94;
 
-  const GAP = 6;
-  const STORE_RATIO = 1.2;
-  const STORE_H_RATIO = 2.0;
-  const BOARD_PAD = 12; 
-  const STORE_MARGIN = 8;
+  const GAP = 6; const STORE_RATIO = 1.2; const STORE_H_RATIO = 2.0;
+  const BOARD_PAD = 12; const STORE_MARGIN = 8;
   const numPitsRow = P1_PITS.length;
 
   const pitSizeW = Math.floor((availW - 2*BOARD_PAD - 2*STORE_MARGIN - (numPitsRow-1)*GAP) / (numPitsRow + 2*STORE_RATIO));
-  const pitSizeH = Math.floor((availH - 2*BOARD_PAD - 32) / 2);
-  const pitSize = Math.max(36, Math.min(pitSizeW, pitSizeH));
+  const pitSizeH = Math.floor((availH - 2*BOARD_PAD - 24) / 2);
+  const pitSize = Math.max(32, Math.min(pitSizeW, pitSizeH));
 
   const storeW = Math.floor(pitSize * STORE_RATIO);
-  const storeH = Math.min(Math.floor(pitSize * STORE_H_RATIO), availH - 40);
+  const storeH = Math.min(Math.floor(pitSize * STORE_H_RATIO), availH - 30);
 
-  for (let i = 0; i < TOTAL_PITS; i++) seedLayouts[i] = generateSeedLayout(50);
+  for (let i = 0; i < TOTAL_PITS; i++) seedLayouts[i] = generateSeedLayout(100);
 
   // Dynamic Perspective
   let topPits, bottomPits, leftStoreIdx, rightStoreIdx, topNameCls, bottomNameCls, topLblText, bottomLblText;
-
-  if (myPlayer === 1) { // Normal Perspective
-    topPits = P2_PITS.slice().reverse(); // Left to right
-    bottomPits = P1_PITS; // Left to right
-    leftStoreIdx = P2_STORE;
-    rightStoreIdx = P1_STORE;
+  if (myPlayer === 1) { 
+    topPits = P2_PITS.slice().reverse(); bottomPits = P1_PITS; 
+    leftStoreIdx = P2_STORE; rightStoreIdx = P1_STORE;
     topNameCls = 'p2'; bottomNameCls = 'p1';
     topLblText = (playerNames[2] || 'PLAYER 2').toUpperCase() + ' ▲';
     bottomLblText = '▼ ' + (playerNames[1] || 'PLAYER 1').toUpperCase();
-  } else { // Inverted Perspective (Guest sees their pits at the bottom)
-    topPits = P1_PITS.slice().reverse();
-    bottomPits = P2_PITS;
-    leftStoreIdx = P1_STORE;
-    rightStoreIdx = P2_STORE;
+  } else { 
+    topPits = P1_PITS.slice().reverse(); bottomPits = P2_PITS;
+    leftStoreIdx = P1_STORE; rightStoreIdx = P2_STORE;
     topNameCls = 'p1'; bottomNameCls = 'p2';
     topLblText = (playerNames[1] || 'PLAYER 1').toUpperCase() + ' ▲';
     bottomLblText = '▼ ' + (playerNames[2] || 'PLAYER 2').toUpperCase();
   }
 
   const storeLeftWrap = makeStore(leftStoreIdx, myPlayer === 1 ? 2 : 1, storeW, storeH);
-
-  const pitsCol = document.createElement('div');
-  pitsCol.className = 'pits-col';
-  pitsCol.style.cssText = 'margin: 0 10px; flex: 1;';
-
-  const topLbl = document.createElement('div');
-  topLbl.style.cssText = 'display:flex;justify-content:center;margin-bottom:2px;';
-  const topSpan = document.createElement('span');
-  topSpan.className = `player-label ${topNameCls}`; topSpan.textContent = topLblText;
+  const pitsCol = document.createElement('div'); pitsCol.className = 'pits-col';
+  
+  const topLbl = document.createElement('div'); topLbl.style.cssText = 'display:flex;justify-content:center;margin-bottom:2px;';
+  const topSpan = document.createElement('span'); topSpan.className = `player-label ${topNameCls}`; topSpan.textContent = topLblText;
   topLbl.appendChild(topSpan); pitsCol.appendChild(topLbl);
 
-  const topRow = document.createElement('div');
-  topRow.className = 'pits-row row-dim'; topRow.id = myPlayer === 1 ? 'row-p2' : 'row-p1';
-  topPits.forEach(idx => topRow.appendChild(makePit(idx, pitSize)));
-  pitsCol.appendChild(topRow);
+  const topRow = document.createElement('div'); topRow.className = 'pits-row row-dim'; topRow.id = myPlayer === 1 ? 'row-p2' : 'row-p1';
+  topPits.forEach(idx => topRow.appendChild(makePit(idx, pitSize))); pitsCol.appendChild(topRow);
 
   const sep = document.createElement('div'); sep.className = 'board-separator'; pitsCol.appendChild(sep);
 
-  const bottomRow = document.createElement('div');
-  bottomRow.className = 'pits-row row-dim'; bottomRow.id = myPlayer === 1 ? 'row-p1' : 'row-p2';
-  bottomPits.forEach(idx => bottomRow.appendChild(makePit(idx, pitSize)));
-  pitsCol.appendChild(bottomRow);
+  const bottomRow = document.createElement('div'); bottomRow.className = 'pits-row row-dim'; bottomRow.id = myPlayer === 1 ? 'row-p1' : 'row-p2';
+  bottomPits.forEach(idx => bottomRow.appendChild(makePit(idx, pitSize))); pitsCol.appendChild(bottomRow);
 
-  const bottomLbl = document.createElement('div');
-  bottomLbl.style.cssText = 'display:flex;justify-content:center;margin-top:2px;';
-  const bottomSpan = document.createElement('span');
-  bottomSpan.className = `player-label ${bottomNameCls}`; bottomSpan.textContent = bottomLblText;
+  const bottomLbl = document.createElement('div'); bottomLbl.style.cssText = 'display:flex;justify-content:center;margin-top:2px;';
+  const bottomSpan = document.createElement('span'); bottomSpan.className = `player-label ${bottomNameCls}`; bottomSpan.textContent = bottomLblText;
   bottomLbl.appendChild(bottomSpan); pitsCol.appendChild(bottomLbl);
 
   const storeRightWrap = makeStore(rightStoreIdx, myPlayer === 1 ? 1 : 2, storeW, storeH);
 
-  board_el.appendChild(storeLeftWrap);
-  board_el.appendChild(pitsCol);
-  board_el.appendChild(storeRightWrap);
+  board_el.appendChild(storeLeftWrap); board_el.appendChild(pitsCol); board_el.appendChild(storeRightWrap);
   wrap.appendChild(board_el);
 
   requestAnimationFrame(() => {
     cachePitRects();
-    renderAllSeeds();
+    initPhysicalSeeds();
+    snapAllSeeds();
+    updateCounts();
   });
 }
 
 function makePit(index, size) {
-  const wrap = document.createElement('div');
-  wrap.className = 'pit-wrap';
-
-  const pit = document.createElement('div');
-  pit.className = 'pit'; pit.id = `pit-${index}`;
+  const wrap = document.createElement('div'); wrap.className = 'pit-wrap';
+  const pit = document.createElement('div'); pit.className = 'pit'; pit.id = `pit-${index}`;
   pit.style.width = pit.style.height = size + 'px';
   pit.addEventListener('click', () => onPitClick(index));
-
-  const inner = document.createElement('div');
-  inner.className = 'pit-inner';
-  const canvas = document.createElement('div');
-  canvas.className = 'seed-canvas'; canvas.id = `seeds-${index}`;
-  inner.appendChild(canvas); pit.appendChild(inner);
-
-  const count = document.createElement('div');
-  count.className = 'pit-count'; count.id = `count-${index}`;
-  count.textContent = '0';
-
-  wrap.appendChild(pit); wrap.appendChild(count);
-  pitElements[index] = pit;
+  const inner = document.createElement('div'); inner.className = 'pit-inner';
+  pit.appendChild(inner);
+  const count = document.createElement('div'); count.className = 'pit-count'; count.id = `count-${index}`; count.textContent = '0';
+  wrap.appendChild(pit); wrap.appendChild(count); pitElements[index] = pit;
   return wrap;
 }
 
 function makeStore(index, playerOwner, w, h) {
-  const wrap = document.createElement('div');
-  wrap.className = 'store-wrap';
-
-  const lbl = document.createElement('div');
-  lbl.className = 'store-label';
+  const wrap = document.createElement('div'); wrap.className = 'store-wrap';
+  const lbl = document.createElement('div'); lbl.className = 'store-label';
   const pName = (playerNames[playerOwner] || `P${playerOwner}`).toUpperCase();
   lbl.textContent = pName.length > 6 ? pName.slice(0,6) + '…' : pName;
-
-  const cnt = document.createElement('div');
-  cnt.className = 'store-count'; cnt.id = `count-${index}`;
-  cnt.textContent = '0';
-
-  const store = document.createElement('div');
-  store.className = 'store'; store.id = `pit-${index}`;
+  const cnt = document.createElement('div'); cnt.className = 'store-count'; cnt.id = `count-${index}`; cnt.textContent = '0';
+  const store = document.createElement('div'); store.className = 'store'; store.id = `pit-${index}`;
   store.style.width = w + 'px'; store.style.height = h + 'px';
+  const inner = document.createElement('div'); inner.className = 'store-inner';
+  store.appendChild(inner); pitElements[index] = store;
 
-  const inner = document.createElement('div');
-  inner.className = 'store-inner';
-  const canvas = document.createElement('div');
-  canvas.className = 'seed-canvas'; canvas.id = `seeds-${index}`;
-  inner.appendChild(canvas); store.appendChild(inner);
-
-  pitElements[index] = store;
-
-  // The owner dictates text placement: right store has label on top, left store has label on bottom
-  if (playerOwner === myPlayer) {
-    wrap.appendChild(lbl); wrap.appendChild(store); wrap.appendChild(cnt);
-  } else {
-    wrap.appendChild(cnt); wrap.appendChild(store); wrap.appendChild(lbl);
-  }
+  if (playerOwner === myPlayer) { wrap.appendChild(lbl); wrap.appendChild(store); wrap.appendChild(cnt); } 
+  else { wrap.appendChild(cnt); wrap.appendChild(store); wrap.appendChild(lbl); }
   return wrap;
 }
 
@@ -866,100 +845,31 @@ function cachePitRects() {
   }
 }
 
-function renderAllSeeds() {
-  for (let i = 0; i < TOTAL_PITS; i++) renderSeeds(i);
-  updateCounts();
-}
-
-function renderSeeds(index) {
-  const container = document.getElementById(`seeds-${index}`);
-  if (!container) return;
-  container.innerHTML = '';
-
-  const count = board[index];
-  if (count === 0) return;
-
-  const el = pitElements[index];
-  if (!el) return;
-  const w = el.offsetWidth || 60;
-  const h = el.offsetHeight || 60;
-
-  const isP1Side = P1_PITS.includes(index) || index === P1_STORE;
-  const colors = isP1Side ? SEED_COLORS_P1 : SEED_COLORS_P2;
-
-  const maxVisible = 24;
-  const displayCount = Math.min(count, maxVisible);
-  const seedR = Math.max(4, Math.min(10, (Math.min(w,h) * 0.13) * (1 - displayCount/60)));
-  const layouts = seedLayouts[index];
-
-  for (let i = 0; i < displayCount; i++) {
-    const layout = layouts[i % layouts.length];
-    const c = colors[i % colors.length];
-
-    const seed = document.createElement('div');
-    seed.className = 'fly-seed'; 
-    const cx = layout.cx * w - seedR;
-    const cy = layout.cy * h - seedR;
-
-    seed.style.cssText = `
-      left:${cx}px; top:${cy}px; width:${seedR*2}px; height:${seedR*2}px;
-      background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
-      box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5);
-    `;
-    container.appendChild(seed);
-  }
-
-  if (count > maxVisible) {
-    const badge = document.createElement('div');
-    badge.style.cssText = `position:absolute;bottom:4px;right:4px;font-size:8px;color:rgba(255,255,255,0.7);font-weight:700;background:rgba(0,0,0,0.5);border-radius:999px;padding:1px 4px;`;
-    badge.textContent = `+${count - maxVisible}`;
-    container.appendChild(badge);
-  }
-}
-
 function updateCounts() {
   for (let i = 0; i < TOTAL_PITS; i++) {
     const el = document.getElementById(`count-${i}`);
     if (el) el.textContent = board[i];
   }
-  const s1 = document.getElementById('score-p1');
-  const s2 = document.getElementById('score-p2');
-  if (s1 && s1.textContent !== String(board[P1_STORE])) {
-    s1.textContent = board[P1_STORE];
-    s1.classList.remove('bump'); void s1.offsetWidth; s1.classList.add('bump');
-  }
-  if (s2 && s2.textContent !== String(board[P2_STORE])) {
-    s2.textContent = board[P2_STORE];
-    s2.classList.remove('bump'); void s2.offsetWidth; s2.classList.add('bump');
-  }
+  const s1 = document.getElementById('score-p1'); const s2 = document.getElementById('score-p2');
+  if (s1 && s1.textContent !== String(board[P1_STORE])) { s1.textContent = board[P1_STORE]; s1.classList.remove('bump'); void s1.offsetWidth; s1.classList.add('bump'); }
+  if (s2 && s2.textContent !== String(board[P2_STORE])) { s2.textContent = board[P2_STORE]; s2.classList.remove('bump'); void s2.offsetWidth; s2.classList.add('bump'); }
 }
 
 function updateClickability() {
   if (!gameActive || animating) {
-    for (let i = 0; i < TOTAL_PITS; i++) {
-      if (pitElements[i]) pitElements[i].classList.remove('clickable', 'p1-clickable', 'p2-clickable');
-    }
+    for (let i = 0; i < TOTAL_PITS; i++) { if (pitElements[i]) pitElements[i].classList.remove('clickable', 'p1-clickable', 'p2-clickable'); }
     return;
   }
   P1_PITS.forEach(i => {
-    const el = pitElements[i];
-    if (!el) return;
-    el.classList.remove('clickable','p1-clickable','p2-clickable');
+    const el = pitElements[i]; if (!el) return; el.classList.remove('clickable','p1-clickable','p2-clickable');
     if (turn === 1 && board[i] > 0 && canIPlay()) el.classList.add('clickable','p1-clickable');
   });
   P2_PITS.forEach(i => {
-    const el = pitElements[i];
-    if (!el) return;
-    el.classList.remove('clickable','p1-clickable','p2-clickable');
+    const el = pitElements[i]; if (!el) return; el.classList.remove('clickable','p1-clickable','p2-clickable');
     if (turn === 2 && board[i] > 0 && canIPlay()) el.classList.add('clickable','p2-clickable');
   });
-
-  const rowP1 = document.getElementById('row-p1');
-  const rowP2 = document.getElementById('row-p2');
-  if (rowP1 && rowP2) {
-    rowP1.classList.toggle('dimmed', turn !== 1);
-    rowP2.classList.toggle('dimmed', turn !== 2);
-  }
+  const rowP1 = document.getElementById('row-p1'); const rowP2 = document.getElementById('row-p2');
+  if (rowP1 && rowP2) { rowP1.classList.toggle('dimmed', turn !== 1); rowP2.classList.toggle('dimmed', turn !== 2); }
 }
 
 function canIPlay() { return gameMode === 'local' || myPlayer === turn; }
@@ -970,82 +880,64 @@ function updateTurnBadge(htmlMsg, cls = 'neutral') {
 
 function onPitClick(index) {
   if (!gameActive || animating) return;
-  const isP1Pit = P1_PITS.includes(index);
-  const isP2Pit = P2_PITS.includes(index);
+  const isP1Pit = P1_PITS.includes(index); const isP2Pit = P2_PITS.includes(index);
   if (!isP1Pit && !isP2Pit) return;
   if (turn === 1 && !isP1Pit) return;
   if (turn === 2 && !isP2Pit) return;
   if (board[index] === 0) return;
   if (!canIPlay()) { showToast('Tunggu giliranmu!'); return; }
-
-  if (gameMode === 'online') {
-    channel.publish('move', { from: index, board: JSON.parse(JSON.stringify(board)), turn });
-  }
+  if (gameMode === 'online') channel.publish('move', { from: index, board: JSON.parse(JSON.stringify(board)), turn });
   doMove(index);
 }
 
+// PHYSICS DRIVEN DOMOVE
 async function doMove(startIndex) {
-  if (animating) return;
-  animating = true;
-  updateClickability();
-  cachePitRects(); 
+  if (animating) return; animating = true; updateClickability(); cachePitRects(); 
 
-  let curr = startIndex;
-  let isRelay = true;
-  let extraTurn = false;
+  let curr = startIndex; let isRelay = true; let extraTurn = false;
   const animSpeed = gameVariant === 'congklak';
 
   while (isRelay) {
-    const seeds = board[curr];
-    board[curr] = 0;
-    renderSeeds(curr);
-    updateCounts();
+    const seedsToMoveCount = board[curr];
+    if (seedsToMoveCount === 0) break;
+
+    let movingSeeds = seedEntities.filter(s => s.pit === curr);
+    board[curr] = 0; updateCounts();
 
     const activePitEl = pitElements[curr];
     if (activePitEl) activePitEl.classList.add('active-pit');
     updateTurnBadge('SOWING...', turn === 1 ? 'p1' : 'p2');
 
-    for (let s = 0; s < seeds; s++) {
-      const prev = curr;
+    for (let s = 0; s < seedsToMoveCount; s++) {
       curr = (curr + 1) % TOTAL_PITS;
       if (turn === 1 && curr === P2_STORE) curr = (curr + 1) % TOTAL_PITS;
       if (turn === 2 && curr === P1_STORE) curr = (curr + 1) % TOTAL_PITS;
 
-      board[curr]++;
-      const fromRect = pitRects[prev] || pitRects[startIndex];
-      const toRect = pitRects[curr];
+      let seedObj = movingSeeds.pop(); 
+      if(!seedObj) break; 
       
-      if (fromRect && toRect) await flyingSeed(fromRect, toRect, turn, false, animSpeed);
-      else await sleep(animSpeed ? 80 : 120);
-
-      renderSeeds(curr); updateCounts();
-      if (s < seeds - 1) await sleep(animSpeed ? 15 : 40);
+      seedObj.pit = curr; board[curr]++;
+      const targetPos = getPitTargetPosition(curr, board[curr] - 1);
+      
+      const p = animateSeedPhysics(seedObj, targetPos, animSpeed);
+      if (s === seedsToMoveCount - 1) await p; else await sleep(animSpeed ? 40 : 80);
+      updateCounts();
     }
 
     if (activePitEl) activePitEl.classList.remove('active-pit');
     const lastEl = pitElements[curr];
     if (lastEl) lastEl.classList.add('active-pit');
-    await sleep(animSpeed ? 120 : 300);
+    await sleep(animSpeed ? 150 : 250);
     if (lastEl) lastEl.classList.remove('active-pit');
 
-    // Conditions Check
     if ((turn === 1 && curr === P1_STORE) || (turn === 2 && curr === P2_STORE)) {
-      // Landed in own store
-      extraTurn = true;
-      isRelay = false;
+      extraTurn = true; isRelay = false;
     } else if (board[curr] > 1) {
-      // Landed in non-empty pit
-      if (gameVariant === 'congklak') {
-        updateTurnBadge(`${SVGS.refresh} RELAY!`, turn === 1 ? 'p1' : 'p2');
-        await sleep(250);
-      } else {
-        isRelay = false; // Mancala ends
-      }
+      if (gameVariant === 'congklak') { updateTurnBadge(`${SVGS.refresh} RELAY!`, turn === 1 ? 'p1' : 'p2'); await sleep(200); } 
+      else isRelay = false;
     } else {
-      // Landed in empty pit (now has 1 seed)
       isRelay = false;
       const isOwnSide = (turn === 1 && P1_PITS.includes(curr)) || (turn === 2 && P2_PITS.includes(curr));
-      
       if (isOwnSide) {
         const oppIndex = (TOTAL_PITS - 2) - curr;
         if (board[oppIndex] > 0) {
@@ -1056,34 +948,23 @@ async function doMove(startIndex) {
           setTimeout(() => document.getElementById('turn-badge')?.classList.remove('pulse'), 600);
           showToast(`${SVGS.zap} <span>${capName} menangkap biji!</span>`);
 
-          const storeRect = pitRects[storeIdx];
-          const oppRect = pitRects[oppIndex];
-          const ownRect = pitRects[curr];
-
-          const captured = board[oppIndex] + board[curr];
-          board[oppIndex] = 0; board[curr] = 0;
-          renderSeeds(oppIndex); renderSeeds(curr);
+          let capSeeds = seedEntities.filter(s => s.pit === oppIndex || s.pit === curr);
+          board[oppIndex] = 0; board[curr] = 0; updateCounts();
 
           const promises = [];
-          const batchCount = Math.min(captured, 6);
-          for (let k = 0; k < batchCount; k++) {
-            promises.push((async () => {
-              await sleep(k * 40);
-              if (oppRect && storeRect) await flyingSeed(oppRect, storeRect, turn, true, animSpeed);
-              if (ownRect && storeRect) await flyingSeed(ownRect, storeRect, turn, true, animSpeed);
-            })());
-          }
-          await Promise.all(promises);
-
-          board[storeIdx] += captured;
-          renderSeeds(storeIdx); updateCounts();
-          await sleep(500);
+          capSeeds.forEach((seedObj, index) => {
+            seedObj.pit = storeIdx; board[storeIdx]++;
+            const targetPos = getPitTargetPosition(storeIdx, board[storeIdx] - 1);
+            promises.push(new Promise(async res => {
+              await sleep(index * 25); await animateSeedPhysics(seedObj, targetPos, animSpeed, true); res();
+            }));
+          });
+          await Promise.all(promises); updateCounts(); await sleep(300);
         }
       }
     }
   }
 
-  // Turn ending logic
   if (extraTurn) {
     const bonusName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
     updateTurnBadge(`${SVGS.target} BONUS TURN — ${bonusName}!`, turn === 1 ? 'p1' : 'p2');
@@ -1093,67 +974,36 @@ async function doMove(startIndex) {
     await sleep(900);
   }
 
-  if (checkGameOver()) return;
-
+  if (await checkGameOver()) return;
   if (!extraTurn) turn = turn === 1 ? 2 : 1;
 
   animating = false;
   const tName = (playerNames[turn] || `Player ${turn}`).toUpperCase();
   updateTurnBadge(`${tName}'S TURN`, turn === 1 ? 'p1' : 'p2');
-  if (!extraTurn) {
-    const badge = document.getElementById('turn-badge');
-    badge?.classList.add('pulse');
-    setTimeout(() => badge?.classList.remove('pulse'), 600);
-  }
+  if (!extraTurn) { const badge = document.getElementById('turn-badge'); badge?.classList.add('pulse'); setTimeout(() => badge?.classList.remove('pulse'), 600); }
   updateClickability();
 }
 
-function flyingSeed(from, to, player, isCapture = false, isFast = false) {
-  return new Promise(resolve => {
-    const layer = document.getElementById('fly-layer');
-    const colors = player === 1 ? SEED_COLORS_P1 : SEED_COLORS_P2;
-    const c = colors[Math.floor(Math.random() * colors.length)];
-    const size = 14;
-
-    const el = document.createElement('div');
-    el.className = 'fly-seed';
-    el.style.cssText = `
-      left:${from.x - size/2}px; top:${from.y - size/2}px;
-      width:${size}px; height:${size}px;
-      background: radial-gradient(circle at 35% 28%, ${c.shine} 0%, ${c.base} 45%, ${c.dark} 100%);
-      box-shadow: inset -1px -1px 3px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.5), 0 3px 8px rgba(0,0,0,0.6);
-      position:absolute; border-radius:50%;
-    `;
-    layer.appendChild(el);
-
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    const baseDur = Math.min(500, Math.max(180, dist * 1.2));
-    const dur = isFast ? baseDur * 0.65 : baseDur; // Faster for Congklak
-    const arcHeight = isCapture ? -(dist * 0.6 + 40) : -(dist * 0.35 + 20);
-    const midX = (from.x + to.x) / 2;
-    const midY = (from.y + to.y) / 2 + arcHeight;
-
-    const kf = [
-      { offset: 0,   left: `${from.x - size/2}px`, top: `${from.y - size/2}px`, transform: 'scale(1.3)', opacity: '1' },
-      { offset: 0.4, left: `${midX - size/2}px`,   top: `${midY - size/2}px`,   transform: 'scale(1.5)', opacity: '1' },
-      { offset: 0.8, left: `${to.x - size/2}px`,   top: `${to.y - size/2}px`,   transform: 'scale(1.1)', opacity: '1' },
-      { offset: 1,   left: `${to.x - size/2}px`,   top: `${to.y - size/2}px`,   transform: 'scale(0.4)', opacity: '0' },
-    ];
-    el.animate(kf, { duration: dur, easing: 'ease-in', fill: 'forwards' }).onfinish = () => { el.remove(); resolve(); };
-  });
-}
-
-function checkGameOver() {
+async function checkGameOver() {
   const p1Empty = P1_PITS.every(i => board[i] === 0);
   const p2Empty = P2_PITS.every(i => board[i] === 0);
   if (!p1Empty && !p2Empty) return false;
 
-  P1_PITS.forEach(i => { board[P1_STORE] += board[i]; board[i] = 0; });
-  P2_PITS.forEach(i => { board[P2_STORE] += board[i]; board[i] = 0; });
+  let sweepSeeds = [];
+  P1_PITS.forEach(i => { sweepSeeds.push(...seedEntities.filter(s=>s.pit===i)); board[P1_STORE] += board[i]; board[i] = 0; });
+  P2_PITS.forEach(i => { sweepSeeds.push(...seedEntities.filter(s=>s.pit===i)); board[P2_STORE] += board[i]; board[i] = 0; });
+  
+  if (sweepSeeds.length > 0) {
+    const promises = [];
+    sweepSeeds.forEach((seedObj, index) => {
+      const storeIdx = P1_PITS.includes(seedObj.pit) ? P1_STORE : P2_STORE;
+      seedObj.pit = storeIdx;
+      const targetPos = getPitTargetPosition(storeIdx, seedEntities.filter(s=>s.pit===storeIdx).length - 1);
+      promises.push(new Promise(async res => { await sleep(index * 20); await animateSeedPhysics(seedObj, targetPos, true, true); res(); }));
+    });
+    await Promise.all(promises); updateCounts();
+  }
 
-  renderAllSeeds(); updateCounts();
   gameActive = false; animating = false;
   setTimeout(() => showGameOver(), 600);
   return true;
@@ -1161,15 +1011,11 @@ function checkGameOver() {
 
 function showGameOver() {
   const s1 = board[P1_STORE], s2 = board[P2_STORE];
-  const n1 = playerNames[1] || 'Player 1';
-  const n2 = playerNames[2] || 'Player 2';
+  const n1 = playerNames[1] || 'Player 1'; const n2 = playerNames[2] || 'Player 2';
   document.getElementById('go-title').textContent = s1 === s2 ? 'DRAW!' : (s1 > s2 ? `${n1.toUpperCase()} WINS!` : `${n2.toUpperCase()} WINS!`);
-  document.getElementById('go-p1').textContent = s1;
-  document.getElementById('go-p2').textContent = s2;
-  const gn1 = document.getElementById('go-name-p1');
-  const gn2 = document.getElementById('go-name-p2');
-  if (gn1) gn1.textContent = n1;
-  if (gn2) gn2.textContent = n2;
+  document.getElementById('go-p1').textContent = s1; document.getElementById('go-p2').textContent = s2;
+  const gn1 = document.getElementById('go-name-p1'); const gn2 = document.getElementById('go-name-p2');
+  if (gn1) gn1.textContent = n1; if (gn2) gn2.textContent = n2;
   document.getElementById('gameover-modal').classList.remove('hidden');
 }
 
@@ -1186,29 +1032,22 @@ function showToast(htmlMsg) {
 function startGame(mode) {
   gameMode = mode; createBoard(); turn = startingPlayer; gameActive = true; animating = false; pitElements = {};
 
-  const sn1 = document.getElementById('score-name-p1');
-  const sn2 = document.getElementById('score-name-p2');
+  const sn1 = document.getElementById('score-name-p1'); const sn2 = document.getElementById('score-name-p2');
   if (sn1) sn1.textContent = (playerNames[1] || 'PLAYER 1').toUpperCase();
   if (sn2) sn2.textContent = (playerNames[2] || 'PLAYER 2').toUpperCase();
 
   const btnMenu = document.getElementById('btn-menu');
-  if (btnMenu) {
-    btnMenu.style.display = (mode === 'online') ? 'none' : 'block';
-  }
+  if (btnMenu) btnMenu.style.display = (mode === 'online') ? 'none' : 'block';
 
-  showScreen('game');
-  buildBoard();
+  showScreen('game'); buildBoard();
   
   const starterName = (playerNames[startingPlayer] || `Player ${startingPlayer}`).toUpperCase();
   updateTurnBadge(`${starterName}'S TURN`, startingPlayer === 1 ? 'p1' : 'p2');
-  
   document.getElementById('gameover-modal').classList.add('hidden');
 
   if (gameMode === 'online') {
-    const badge = document.getElementById('conn-badge');
-    badge.className = 'conn-badge online';
-    badge.textContent = `● ONLINE · ROOM ${roomCode}`;
-    badge.classList.remove('hidden');
+    const badge = document.getElementById('conn-badge'); badge.className = 'conn-badge online';
+    badge.textContent = `● ONLINE · ROOM ${roomCode}`; badge.classList.remove('hidden');
   }
   setTimeout(updateClickability, 300);
 }
@@ -1223,7 +1062,12 @@ function checkOrientation() {
   const isPortrait = window.innerHeight > window.innerWidth;
   document.getElementById('portrait-warn').classList.toggle('hidden', !isPortrait);
 }
-window.addEventListener('resize', () => { checkOrientation(); cachePitRects(); });
+let resizeTimeout;
+window.addEventListener('resize', () => { 
+  checkOrientation(); 
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => { snapAllSeeds(); }, 150); 
+});
 checkOrientation();
 
 function initAbly(onReady) {
@@ -1231,155 +1075,72 @@ function initAbly(onReady) {
   ably.connection.on('connected', onReady);
   ably.connection.on('disconnected', () => showToast(`${SVGS.alert} <span>Koneksi terputus</span>`));
 }
-
-function generateRoomCode() {
-  return Math.floor(1000 + Math.random() * 9000).toString();
-}
-
+function generateRoomCode() { return Math.floor(1000 + Math.random() * 9000).toString(); }
 function joinAblyRoom(code, asPlayer) {
-  roomCode = code; myPlayer = asPlayer;
-  channel = ably.channels.get(`mancala-${code}`);
-
-  channel.subscribe('move', msg => {
-    if (gameMode !== 'online') return;
-    if (msg.data.turn !== myPlayer) doMove(msg.data.from);
-  });
-
-  channel.subscribe('rematch', msg => {
-    startingPlayer = msg.data.startingPlayer || (startingPlayer === 1 ? 2 : 1);
-    startGame('online'); 
-    showToast('Rematch dimulai!');
-  });
+  roomCode = code; myPlayer = asPlayer; channel = ably.channels.get(`mancala-${code}`);
+  channel.subscribe('move', msg => { if (gameMode !== 'online') return; if (msg.data.turn !== myPlayer) doMove(msg.data.from); });
+  channel.subscribe('rematch', msg => { startingPlayer = msg.data.startingPlayer || (startingPlayer === 1 ? 2 : 1); startGame('online'); showToast('Rematch dimulai!'); });
 }
 
-// HOST CREATES
 function _doCreateRoom() {
-  const lbl = document.getElementById('lobby-status');
-  lbl.textContent = 'Menghubungkan...';
+  const lbl = document.getElementById('lobby-status'); lbl.textContent = 'Menghubungkan...';
   initAbly(() => {
-    isHost = true;
-    startingPlayer = 1;
-    const code = generateRoomCode();
-    document.getElementById('room-code-display').textContent = code;
-    joinAblyRoom(code, 1);
-    showScreen('waiting');
-    
-    // Tunggu lawan join dan bawa namanya
+    isHost = true; startingPlayer = 1; const code = generateRoomCode(); document.getElementById('room-code-display').textContent = code;
+    joinAblyRoom(code, 1); showScreen('waiting');
     channel.subscribe('join', msg => {
       playerNames[2] = msg.data.name || 'PLAYER 2';
-      // Balas dengan ready, kirim nama host dan variant game
-      channel.publish('ready', { 
-        hostName: myGlobalName, 
-        variant: gameVariant 
-      });
-      showToast('Lawan bergabung!');
-      startGame('online');
+      channel.publish('ready', { hostName: myGlobalName, variant: gameVariant });
+      showToast('Lawan bergabung!'); startGame('online');
     });
     lbl.textContent = '';
   });
 }
 
-// GUEST JOINS
 function _doJoinRoom(code) {
-  const lbl = document.getElementById('lobby-status');
-  lbl.textContent = 'Menghubungkan...';
+  const lbl = document.getElementById('lobby-status'); lbl.textContent = 'Menghubungkan...';
   initAbly(() => {
-    isHost = false;
-    startingPlayer = 1;
-    joinAblyRoom(code, 2);
-    
-    // Minta siap dan kirim nama kita
-    channel.publish('join', { name: myGlobalName });
-    lbl.textContent = 'Menunggu konfirmasi host...';
-
-    // Host merespons siap
+    isHost = false; startingPlayer = 1; joinAblyRoom(code, 2);
+    channel.publish('join', { name: myGlobalName }); lbl.textContent = 'Menunggu konfirmasi host...';
     channel.subscribe('ready', msg => {
       playerNames[1] = msg.data.hostName || 'PLAYER 1';
-      setVariant(msg.data.variant || 'mancala'); // Gunakan varian pilihan host
-      showToast('Game dimulai!');
-      startGame('online');
+      setVariant(msg.data.variant || 'mancala'); 
+      showToast('Game dimulai!'); startGame('online');
     });
   });
 }
 
-document.getElementById('btn-copy').onclick = () => {
-  const code = document.getElementById('room-code-display').textContent;
-  navigator.clipboard.writeText(code).then(() => showToast('Kode disalin!'));
-};
-
-document.getElementById('btn-cancel').onclick = () => {
-  if (ably) { ably.close(); ably = null; }
-  showScreen('lobby');
-};
-
-document.getElementById('btn-menu').onclick = () => {
-  gameActive = false; if (ably) { ably.close(); ably = null; } showScreen('lobby');
-};
-
-document.getElementById('go-menu').onclick = () => {
-  document.getElementById('gameover-modal').classList.add('hidden');
-  gameActive = false; if (ably) { ably.close(); ably = null; } showScreen('lobby');
-};
-
+document.getElementById('btn-copy').onclick = () => { navigator.clipboard.writeText(document.getElementById('room-code-display').textContent).then(() => showToast('Kode disalin!')); };
+document.getElementById('btn-cancel').onclick = () => { if (ably) { ably.close(); ably = null; } showScreen('lobby'); };
+document.getElementById('btn-menu').onclick = () => { gameActive = false; if (ably) { ably.close(); ably = null; } showScreen('lobby'); };
+document.getElementById('go-menu').onclick = () => { document.getElementById('gameover-modal').classList.add('hidden'); gameActive = false; if (ably) { ably.close(); ably = null; } showScreen('lobby'); };
 document.getElementById('go-rematch').onclick = () => {
   document.getElementById('gameover-modal').classList.add('hidden');
-  
-  if (gameMode === 'online' && channel) {
-    const nextStarter = startingPlayer === 1 ? 2 : 1;
-    channel.publish('rematch', { startingPlayer: nextStarter });
-  } else {
-    startingPlayer = startingPlayer === 1 ? 2 : 1;
-    startGame(gameMode);
-  }
+  if (gameMode === 'online' && channel) { const nextStarter = startingPlayer === 1 ? 2 : 1; channel.publish('rematch', { startingPlayer: nextStarter }); } 
+  else { startingPlayer = startingPlayer === 1 ? 2 : 1; startGame(gameMode); }
 };
 
-function showLobbyStatus(msg) {
-  const lbl = document.getElementById('lobby-status');
-  lbl.textContent = msg; setTimeout(() => lbl.textContent = '', 3000);
-}
-
-function tryFullscreen() {
-  const el = document.documentElement;
-  if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
-  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-}
-
 function tryLandscape() {
-  try {
-    if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {});
-  } catch(e) {}
-  tryFullscreen();
+  try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); } catch(e) {}
+  if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+  else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
   try { localStorage.setItem('mancala_fs', '1'); } catch(e) {}
 }
 
 function updateFsButton() {
   const inFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  const btn1 = document.getElementById('btn-fs-global');
-  if (btn1) btn1.innerHTML = inFs ? `${SVGS.min} EXIT FS` : `${SVGS.max} FULLSCREEN`;
-  const btn2 = document.getElementById('btn-fs-game');
-  if (btn2) btn2.innerHTML = inFs ? SVGS.min : SVGS.max;
+  const btn1 = document.getElementById('btn-fs-global'); if (btn1) btn1.innerHTML = inFs ? `${SVGS.min} EXIT FS` : `${SVGS.max} FULLSCREEN`;
+  const btn2 = document.getElementById('btn-fs-game'); if (btn2) btn2.innerHTML = inFs ? SVGS.min : SVGS.max;
 }
-document.addEventListener('fullscreenchange', updateFsButton);
-document.addEventListener('webkitfullscreenchange', updateFsButton);
+document.addEventListener('fullscreenchange', updateFsButton); document.addEventListener('webkitfullscreenchange', updateFsButton);
 
 const toggleFs = () => {
   if (document.fullscreenElement || document.webkitFullscreenElement) {
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
   } else { tryLandscape(); }
 };
-document.getElementById('btn-fs-global').onclick = toggleFs;
-document.getElementById('btn-fs-game').onclick = toggleFs;
+document.getElementById('btn-fs-global').onclick = toggleFs; document.getElementById('btn-fs-game').onclick = toggleFs;
 document.getElementById('btn-force-landscape').onclick = () => tryLandscape();
-
-try {
-  if (localStorage.getItem('mancala_fs') === '1') {
-    document.addEventListener('click', function autoFs() {
-      if (!document.fullscreenElement) tryLandscape();
-      document.removeEventListener('click', autoFs);
-    }, { once: true, capture: true });
-  }
-} catch(e) {}
+try { if (localStorage.getItem('mancala_fs') === '1') { document.addEventListener('click', function autoFs() { if (!document.fullscreenElement) tryLandscape(); document.removeEventListener('click', autoFs); }, { once: true, capture: true }); } } catch(e) {}
 
 </script>
 </body>
